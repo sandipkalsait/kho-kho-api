@@ -9,6 +9,39 @@ from .serializers import (
 )
 from .utils.pdf_generator import generate_scoresheet_pdf
 
+import io
+import time
+import logging
+import json
+import base64
+from io import BytesIO
+from PIL import Image, ImageOps
+import pytesseract
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.response import Response
+from rest_framework import status
+
+# --- Structured Logging Setup ---
+class StructuredFormatter(logging.Formatter):
+    def format(self, record):
+        log_entry = {
+            "timestamp": self.formatTime(record, self.datefmt),
+            "level": record.levelname,
+            "message": record.getMessage()
+        }
+        if hasattr(record, "extra_data"):
+            log_entry.update(getattr(record, "extra_data"))
+        return json.dumps(log_entry)
+
+logger = logging.getLogger("ocr_logger")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(StructuredFormatter())
+    logger.addHandler(console_handler)
+logger.propagate = False
+
 class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
@@ -47,3 +80,77 @@ class InningViewSet(viewsets.ModelViewSet):
 class ScoreEventViewSet(viewsets.ModelViewSet):
     queryset = ScoreEvent.objects.all()
     serializer_class = ScoreEventSerializer
+
+@api_view(['POST'])
+@parser_classes([JSONParser, MultiPartParser, FormParser])
+def process_ocr(request):
+    start_time = time.time()
+    
+    # 1. Validate Request
+    image_base64 = request.data.get('image_base64')
+    if image_base64:
+        try:
+            image_data = base64.b64decode(image_base64)
+            img = Image.open(BytesIO(image_data))
+            filename = request.data.get('filename', 'upload.jpg')
+            content_type = request.data.get('type', 'image/jpeg')
+        except Exception as e:
+            return Response({'error': 'Invalid base64 image data'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        # Fallback to standard multipart upload
+        image_file = request.FILES.get('image') or request.data.get('image')
+        
+        if not image_file:
+            return Response({'error': 'No image file provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Guard against React Native sending string dictionary
+        if isinstance(image_file, str):
+            return Response({'error': 'Image was incorrectly sent as a string instead of a file.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        content_type = getattr(image_file, 'content_type', '')
+        
+        # Be more permissive with content types
+        if not content_type.startswith('image/'):
+            return Response({'error': f"Unsupported file type ({content_type}). Please upload an image."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        img = Image.open(image_file)
+        filename = getattr(image_file, 'name', 'unknown')
+
+    try:
+        
+        # 2. Preprocessing
+        img = ImageOps.grayscale(img)
+        
+        # 3. Perform OCR
+        extracted_text = pytesseract.image_to_string(img).strip()
+        
+        # Calculate processing time
+        processing_time_ms = int((time.time() - start_time) * 1000)
+        
+        # 4. Structured Logging
+        logger.info(
+            "OCR Processing Complete",
+            extra={
+                "extra_data": {
+                    "filename": filename,
+                    "content_type": content_type,
+                    "processing_time_ms": processing_time_ms,
+                    "extracted_text_snippet": extracted_text[:100] + "..." if len(extracted_text) > 100 else extracted_text,
+                    "text_length": len(extracted_text)
+                }
+            }
+        )
+        
+        # 5. Return Response
+        return Response({
+            "status": "success",
+            "text": extracted_text,
+            "processing_time_ms": processing_time_ms
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        logger.error(
+            "OCR Processing Failed",
+            extra={"extra_data": {"filename": locals().get('filename', 'unknown'), "error": str(e)}}
+        )
+        return Response({'error': 'Error processing image for OCR.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

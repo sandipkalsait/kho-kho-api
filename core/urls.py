@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     TournamentViewSet, TeamViewSet, PlayerViewSet, 
-    MatchViewSet, InningViewSet, ScoreEventViewSet
+    MatchViewSet, InningViewSet, ScoreEventViewSet, process_ocr
 )
 
 router = DefaultRouter()
@@ -15,4 +15,5 @@ router.register(r'score-events', ScoreEventViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('ocr/', process_ocr, name='process-ocr'),
 ]
