@@ -1,0 +1,1063 @@
+{
+  "message": "Bulk data successfully distributed to all downstream APIs.",
+  "results": {
+    "teams_a": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "name": "AJIO Team",
+        "coach": "Rajendra Kulkarni",
+        "manager": "Sanjay Patil",
+        "supporting_staff": "Physio: Dr. Mehta"
+      }
+    },
+    "teams_b": {
+      "status": 201,
+      "response": {
+        "id": 2,
+        "name": "AMAR Team",
+        "coach": "Vijay Kulkarni",
+        "manager": "Pradeep Patil",
+        "supporting_staff": "Physio: Dr. Joshi"
+      }
+    },
+    "match-details": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "tournamentId": null,
+        "team_A_id": 1,
+        "teamB_id": 2,
+        "match_no": 12,
+        "date": "2026-03-16",
+        "time": "15:30:00",
+        "court_no": 2,
+        "type": "League",
+        "session": "Morning",
+        "section": "SENIOR",
+        "category": "MEN",
+        "group": "A",
+        "toss_winner": "Shivaji Warriors",
+        "choice": "Attack",
+        "batches": {
+          "team_a": [
+            [
+              7,
+              9,
+              3
+            ],
+            [
+              5,
+              6,
+              2
+            ],
+            [
+              1,
+              4,
+              8
+            ]
+          ],
+          "team_b": [
+            [
+              2,
+              4,
+              6
+            ],
+            [
+              8,
+              10,
+              1
+            ],
+            [
+              3,
+              5,
+              7
+            ]
+          ]
+        }
+      }
+    },
+    "player_Rohit Patil": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "name": "Rohit Patil",
+        "chest_number": 1,
+        "team": 1
+      }
+    },
+    "player_Amit Shinde": {
+      "status": 201,
+      "response": {
+        "id": 2,
+        "name": "Amit Shinde",
+        "chest_number": 2,
+        "team": 1
+      }
+    },
+    "player_Vikas Jadhav": {
+      "status": 201,
+      "response": {
+        "id": 3,
+        "name": "Vikas Jadhav",
+        "chest_number": 3,
+        "team": 1
+      }
+    },
+    "player_Nitin Kale": {
+      "status": 201,
+      "response": {
+        "id": 4,
+        "name": "Nitin Kale",
+        "chest_number": 5,
+        "team": 1
+      }
+    },
+    "player_Mahesh More": {
+      "status": 201,
+      "response": {
+        "id": 5,
+        "name": "Mahesh More",
+        "chest_number": 6,
+        "team": 1
+      }
+    },
+    "player_Tushar Shinde": {
+      "status": 201,
+      "response": {
+        "id": 6,
+        "name": "Tushar Shinde",
+        "chest_number": 4,
+        "team": 2
+      }
+    },
+    "player_Santosh Gaikwad": {
+      "status": 201,
+      "response": {
+        "id": 7,
+        "name": "Santosh Gaikwad",
+        "chest_number": 9,
+        "team": 1
+      }
+    },
+    "player_Nilesh Shinde": {
+      "status": 201,
+      "response": {
+        "id": 8,
+        "name": "Nilesh Shinde",
+        "chest_number": 11,
+        "team": 2
+      }
+    },
+    "player_Yogesh Gaikwad": {
+      "status": 201,
+      "response": {
+        "id": 9,
+        "name": "Yogesh Gaikwad",
+        "chest_number": 9,
+        "team": 2
+      }
+    },
+    "player_Manoj Jadhav": {
+      "status": 201,
+      "response": {
+        "id": 10,
+        "name": "Manoj Jadhav",
+        "chest_number": 15,
+        "team": 2
+      }
+    },
+    "result": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "team_a_total": 52,
+        "team_b_total": 47,
+        "won_by": "5 points",
+        "team_won": "",
+        "team_A": {
+          "I": [
+            "3",
+            "-"
+          ],
+          "II": [
+            "42",
+            "-"
+          ],
+          "III": [
+            "45",
+            "-"
+          ],
+          "IV": "-"
+        },
+        "team_B": {
+          "I": [
+            "3",
+            "-"
+          ],
+          "II": [
+            "42",
+            "-"
+          ],
+          "III": [
+            "45",
+            "-"
+          ],
+          "IV": "-"
+        }
+      }
+    },
+    "match-staff": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "scorer_1": "Amit Patil",
+        "scorer_2": "Rohit Sharma",
+        "umpire_1": "Suresh Pawar",
+        "umpire_2": "Mahesh Jadhav",
+        "post_umpire_1": "Vikas Kale",
+        "post_umpire_2": "Nitin Shinde",
+        "dugout": "Team A Bench",
+        "timekeeper": "Anil More",
+        "referee": "Prakash Deshmukh"
+      }
+    },
+    "player_Arjun Deshmukh": {
+      "status": 201,
+      "response": {
+        "id": 11,
+        "name": "Arjun Deshmukh",
+        "chest_number": 1,
+        "team": 2
+      }
+    },
+    "player_Sagar More": {
+      "status": 201,
+      "response": {
+        "id": 12,
+        "name": "Sagar More",
+        "chest_number": 14,
+        "team": 2
+      }
+    },
+    "player_Rakesh Patil": {
+      "status": 201,
+      "response": {
+        "id": 13,
+        "name": "Rakesh Patil",
+        "chest_number": 2,
+        "team": 2
+      }
+    },
+    "player_Sachin Jagtap": {
+      "status": 201,
+      "response": {
+        "id": 14,
+        "name": "Sachin Jagtap",
+        "chest_number": 10,
+        "team": 2
+      }
+    },
+    "player_Vijay More": {
+      "status": 201,
+      "response": {
+        "id": 15,
+        "name": "Vijay More",
+        "chest_number": 14,
+        "team": 1
+      }
+    },
+    "player_Suresh Pawar": {
+      "status": 201,
+      "response": {
+        "id": 16,
+        "name": "Suresh Pawar",
+        "chest_number": 4,
+        "team": 1
+      }
+    },
+    "extra_points": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "Team_A": {
+          "late_entry": [
+            2,
+            4
+          ],
+          "out_of_field": [
+            9
+          ],
+          "warning": [
+            15
+          ],
+          "dream_run": [
+            8
+          ]
+        },
+        "Team_B": {
+          "late_entry": [
+            2,
+            4
+          ],
+          "out_of_field": [
+            9
+          ],
+          "warning": [
+            15
+          ],
+          "dream_run": [
+            8
+          ]
+        }
+      }
+    },
+    "player_Prakash Chavan": {
+      "status": 201,
+      "response": {
+        "id": 17,
+        "name": "Prakash Chavan",
+        "chest_number": 7,
+        "team": 1
+      }
+    },
+    "substitutions": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "Substitutions": {
+          "TeamA": [
+            {
+              "player_in": 7,
+              "player_out": 3
+            },
+            {
+              "player_in": 7,
+              "player_out": 3
+            },
+            {
+              "player_in": 7,
+              "player_out": 3
+            },
+            {
+              "player_in": 7,
+              "player_out": 3
+            }
+          ],
+          "TeamB": [
+            {
+              "player_in": 7,
+              "player_out": 3
+            },
+            {
+              "player_in": 7,
+              "player_out": 3
+            },
+            {
+              "player_in": 7,
+              "player_out": 3
+            },
+            {
+              "player_in": 7,
+              "player_out": 3
+            }
+          ]
+        }
+      }
+    },
+    "player_Ravi Patil": {
+      "status": 201,
+      "response": {
+        "id": 18,
+        "name": "Ravi Patil",
+        "chest_number": 13,
+        "team": 2
+      }
+    },
+    "player_Kiran Shinde": {
+      "status": 201,
+      "response": {
+        "id": 19,
+        "name": "Kiran Shinde",
+        "chest_number": 11,
+        "team": 1
+      }
+    },
+    "tournaments": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "name": "National Championship 2026",
+        "venue": "Pune Stadium"
+      }
+    },
+    "player_Pankaj Pawar": {
+      "status": 201,
+      "response": {
+        "id": 20,
+        "name": "Pankaj Pawar",
+        "chest_number": 12,
+        "team": 2
+      }
+    },
+    "player_Deepak Pawar": {
+      "status": 201,
+      "response": {
+        "id": 21,
+        "name": "Deepak Pawar",
+        "chest_number": 12,
+        "team": 1
+      }
+    },
+    "player_Anil Deshmukh": {
+      "status": 201,
+      "response": {
+        "id": 22,
+        "name": "Anil Deshmukh",
+        "chest_number": 8,
+        "team": 1
+      }
+    },
+    "player_Ganesh Jadhav": {
+      "status": 201,
+      "response": {
+        "id": 23,
+        "name": "Ganesh Jadhav",
+        "chest_number": 3,
+        "team": 2
+      }
+    },
+    "player_Akash Pawar": {
+      "status": 201,
+      "response": {
+        "id": 24,
+        "name": "Akash Pawar",
+        "chest_number": 8,
+        "team": 2
+      }
+    },
+    "player_Ajay Patil": {
+      "status": 201,
+      "response": {
+        "id": 25,
+        "name": "Ajay Patil",
+        "chest_number": 13,
+        "team": 1
+      }
+    },
+    "player_Swapnil Chavan": {
+      "status": 201,
+      "response": {
+        "id": 26,
+        "name": "Swapnil Chavan",
+        "chest_number": 7,
+        "team": 2
+      }
+    },
+    "player_Omkar Kale": {
+      "status": 201,
+      "response": {
+        "id": 27,
+        "name": "Omkar Kale",
+        "chest_number": 5,
+        "team": 2
+      }
+    },
+    "score_card": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "Team_A": {
+          "I": {
+            "defender": [
+              1,
+              2,
+              3
+            ],
+            "attacker": [
+              4,
+              5,
+              6
+            ],
+            "run_time": [
+              "0:30",
+              "0:45"
+            ],
+            "per_time": [
+              "1:00"
+            ],
+            "symbol": "+"
+          },
+          "II": {
+            "defender": [
+              7,
+              8,
+              9
+            ],
+            "attacker": [
+              10,
+              11
+            ],
+            "run_time": [
+              "0:20"
+            ],
+            "per_time": [
+              "0:50"
+            ],
+            "symbol": "-"
+          }
+        },
+        "Team_B": {
+          "I": {
+            "defender": [
+              1,
+              2,
+              3
+            ],
+            "attacker": [
+              4,
+              5,
+              6
+            ],
+            "run_time": [
+              "0:30",
+              "0:45"
+            ],
+            "per_time": [
+              "1:00"
+            ],
+            "symbol": "+"
+          },
+          "II": {
+            "defender": [
+              7,
+              8,
+              9
+            ],
+            "attacker": [
+              10,
+              11
+            ],
+            "run_time": [
+              "0:20"
+            ],
+            "per_time": [
+              "0:50"
+            ],
+            "symbol": "-"
+          }
+        }
+      }
+    },
+    "player_Dinesh More": {
+      "status": 201,
+      "response": {
+        "id": 28,
+        "name": "Dinesh More",
+        "chest_number": 6,
+        "team": 2
+      }
+    },
+    "defence": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "Team_A": {
+          "I": [
+            [
+              "00:30",
+              "01:15",
+              "02:10",
+              "00:45",
+              "01:20",
+              "00:50",
+              "01:05",
+              "00:55",
+              "01:25",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "00:45",
+              "01:20",
+              "00:50",
+              "01:10",
+              "00:35",
+              "01:00",
+              "01:40",
+              "00:55",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "00:50",
+              "01:05",
+              "00:55",
+              "01:25",
+              "01:10",
+              "00:35",
+              "01:00",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ]
+          ],
+          "II": [
+            [
+              "01:00",
+              "01:40",
+              "00:35",
+              "01:10",
+              "00:55",
+              "01:25",
+              "01:05",
+              "00:40",
+              "01:30",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "00:35",
+              "01:10",
+              "00:55",
+              "01:25",
+              "01:05",
+              "00:40",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ]
+          ],
+          "III": [
+            [
+              "00:55",
+              "01:25",
+              "01:05",
+              "00:40",
+              "01:30",
+              "00:45",
+              "01:20",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "01:05",
+              "00:40",
+              "01:30",
+              "00:45",
+              "01:20",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ]
+          ],
+          "IV": [
+            "00:40",
+            "01:30",
+            "00:45",
+            "01:20",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-"
+          ]
+        },
+        "Team_B": {
+          "I": [
+            [
+              "00:30",
+              "01:15",
+              "02:10",
+              "00:45",
+              "01:20",
+              "00:50",
+              "01:05",
+              "00:55",
+              "01:25",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "00:45",
+              "01:20",
+              "00:50",
+              "01:10",
+              "00:35",
+              "01:00",
+              "01:40",
+              "00:55",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "00:50",
+              "01:05",
+              "00:55",
+              "01:25",
+              "01:10",
+              "00:35",
+              "01:00",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ]
+          ],
+          "II": [
+            [
+              "01:00",
+              "01:40",
+              "00:35",
+              "01:10",
+              "00:55",
+              "01:25",
+              "01:05",
+              "00:40",
+              "01:30",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "00:35",
+              "01:10",
+              "00:55",
+              "01:25",
+              "01:05",
+              "00:40",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ]
+          ],
+          "III": [
+            [
+              "00:55",
+              "01:25",
+              "01:05",
+              "00:40",
+              "01:30",
+              "00:45",
+              "01:20",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ],
+            [
+              "01:05",
+              "00:40",
+              "01:30",
+              "00:45",
+              "01:20",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-",
+              "-"
+            ]
+          ],
+          "IV": [
+            "00:40",
+            "01:30",
+            "00:45",
+            "01:20",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            "-"
+          ]
+        }
+      }
+    },
+    "running_batch": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "Team_A": {
+          "turn_I": [
+            [
+              7,
+              9,
+              3
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              2
+            ]
+          ],
+          "turn_II": [
+            [
+              2,
+              4
+            ],
+            [
+              8,
+              10,
+              1
+            ],
+            [
+              3
+            ],
+            [
+              6
+            ]
+          ],
+          "turn_III": [
+            [
+              6,
+              7
+            ],
+            [
+              9
+            ],
+            [
+              11,
+              12
+            ],
+            [
+              4
+            ]
+          ],
+          "turn_IV": [
+            [
+              3
+            ],
+            [
+              5,
+              8
+            ]
+          ]
+        },
+        "Team_B": {
+          "turn_I": [
+            [
+              7,
+              9,
+              3
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              2
+            ]
+          ],
+          "turn_II": [
+            [
+              2,
+              4
+            ],
+            [
+              8,
+              10,
+              1
+            ],
+            [
+              3
+            ],
+            [
+              6
+            ]
+          ],
+          "turn_III": [
+            [
+              6,
+              7
+            ],
+            [
+              9
+            ],
+            [
+              11,
+              12
+            ],
+            [
+              4
+            ]
+          ],
+          "turn_IV": [
+            [
+              3
+            ],
+            [
+              5,
+              8
+            ]
+          ]
+        }
+      }
+    },
+    "chase": {
+      "status": 201,
+      "response": {
+        "id": 1,
+        "match_id": 1,
+        "Team_A": {
+          "I": [
+            7,
+            9,
+            3,
+            5
+          ],
+          "II": [
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "III": [
+            1,
+            11,
+            12
+          ],
+          "IV": [
+            3,
+            5,
+            7,
+            9
+          ]
+        },
+        "Team_B": {
+          "I": [
+            7,
+            9,
+            3,
+            5
+          ],
+          "II": [
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "III": [
+            1,
+            11,
+            12
+          ],
+          "IV": [
+            3,
+            5,
+            7,
+            9
+          ]
+        }
+      }
+    },
+    "player_Rahul Jagtap": {
+      "status": 201,
+      "response": {
+        "id": 29,
+        "name": "Rahul Jagtap",
+        "chest_number": 10,
+        "team": 1
+      }
+    },
+    "player_Sunil Jadhav": {
+      "status": 201,
+      "response": {
+        "id": 30,
+        "name": "Sunil Jadhav",
+        "chest_number": 15,
+        "team": 1
+      }
+    }
+  }
+}

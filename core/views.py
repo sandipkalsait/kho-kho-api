@@ -2,12 +2,131 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import HttpResponse
-from .models import Tournament, Team, Player, Match, Inning, ScoreEvent
+from .models import Tournament, Team, Player, MatchDetails, MatchStaff, MatchResult, ExtraPoints, RunningBatch, Substitution, Chase, Defence, ScoreCard
 from .serializers import (
     TournamentSerializer, TeamSerializer, PlayerSerializer, 
-    MatchSerializer, MatchCreateSerializer, InningSerializer, ScoreEventSerializer
+    MatchDetailsSerializer, MatchDetailsResponseSerializer, MatchStaffSerializer,
+    MatchResultSerializer, MatchResultResponseSerializer, ExtraPointsSerializer,
+    RunningBatchSerializer, SubstitutionSerializer, ChaseSerializer, DefenceSerializer,
+    ScoreCardSerializer
 )
 from .utils.pdf_generator import generate_scoresheet_pdf
+
+class SubstitutionViewSet(viewsets.ModelViewSet):
+    queryset = Substitution.objects.all()
+    serializer_class = SubstitutionSerializer
+
+class ChaseViewSet(viewsets.ModelViewSet):
+    queryset = Chase.objects.all()
+    serializer_class = ChaseSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"chase": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"chase": item} for item in serializer.data])
+
+class DefenceViewSet(viewsets.ModelViewSet):
+    queryset = Defence.objects.all()
+    serializer_class = DefenceSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"defence": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"defence": item} for item in serializer.data])
+
+class ScoreCardViewSet(viewsets.ModelViewSet):
+    queryset = ScoreCard.objects.all()
+    serializer_class = ScoreCardSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"score_card": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"score_card": item} for item in serializer.data])
+
+class RunningBatchViewSet(viewsets.ModelViewSet):
+    queryset = RunningBatch.objects.all()
+    serializer_class = RunningBatchSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"running_batch": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"running_batch": item} for item in serializer.data])
+
+class ExtraPointsViewSet(viewsets.ModelViewSet):
+    queryset = ExtraPoints.objects.all()
+    serializer_class = ExtraPointsSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"extra_points": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"extra_points": item} for item in serializer.data])
+
+class MatchResultViewSet(viewsets.ModelViewSet):
+    queryset = MatchResult.objects.all()
+    serializer_class = MatchResultSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"result": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"result": item} for item in serializer.data])
+
+class MatchStaffViewSet(viewsets.ModelViewSet):
+    queryset = MatchStaff.objects.all()
+    serializer_class = MatchStaffSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"match_staff": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"match_staff": item} for item in serializer.data])
+
+class MatchDetailsViewSet(viewsets.ModelViewSet):
+    queryset = MatchDetails.objects.all()
+    serializer_class = MatchDetailsSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"match_details": serializer.data})
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response([{"match_details": item} for item in serializer.data])
 
 import io
 import time
@@ -53,33 +172,6 @@ class TeamViewSet(viewsets.ModelViewSet):
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
-
-class MatchViewSet(viewsets.ModelViewSet):
-    queryset = Match.objects.all()
-    
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return MatchCreateSerializer
-        return MatchSerializer
-
-    @action(detail=True, methods=['get'])
-    def download_scoresheet(self, request, pk=None):
-        match = self.get_object()
-        try:
-            pdf_buffer = generate_scoresheet_pdf(match)
-            response = HttpResponse(pdf_buffer, content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="match_{match.match_number}_scoresheet.pdf"'
-            return response
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class InningViewSet(viewsets.ModelViewSet):
-    queryset = Inning.objects.all()
-    serializer_class = InningSerializer
-
-class ScoreEventViewSet(viewsets.ModelViewSet):
-    queryset = ScoreEvent.objects.all()
-    serializer_class = ScoreEventSerializer
 
 @api_view(['POST'])
 @parser_classes([JSONParser, MultiPartParser, FormParser])
