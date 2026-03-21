@@ -49,6 +49,7 @@ except ImportError:
 from .models import UploadRequest, ExtractedData, ReviewedData, AuditLog
 from .utils.ocr_preprocessing import preprocess_image
 from .utils.ocr_parser import parse_kho_kho_sheet, find_missing_fields
+from .utils.template_extractor import KhoKhoExtractor
 
 logger = logging.getLogger("ocr_pipeline")
 
@@ -110,31 +111,37 @@ def upload_image(request):
 
     # 2. Preprocess & OCR
     try:
-        if not cv2 or not np or not pytesseract:
-            missing_libs = [l for l, m in [("opencv-python", cv2), ("numpy", np), ("pytesseract", pytesseract)] if not m]
-            logger.error("Missing dependencies for OCR: %s", missing_libs)
-            return Response({"error": f"OCR dependencies are missing: {', '.join(missing_libs)}. Please run 'pip install -r requirements.txt' and ensure Tesseract is installed."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # Image Refinement (Grayscale, Noise, Deskew, Thresh)
-        logger.debug("Refining image for OCR...")
-        refined_img = preprocess_image(img_ndarray)
+        if not cv2 or not np:
+            return Response({"error": "System Error: OpenCV or NumPy is not installed on the server backend."}, status=500)
+            
+        # Save file temporarily to disk for CV2/OCR processing
+        temp_id = uuid.uuid4()
+        temp_path = os.path.join(django_settings.MEDIA_ROOT, f"{temp_id}.png")
+        if not os.path.exists(django_settings.MEDIA_ROOT): 
+            os.makedirs(django_settings.MEDIA_ROOT)
         
-        # OCR Engine
-        pil_refined = Image.fromarray(refined_img)
+        cv2.imwrite(temp_path, img_ndarray)
         
-        # Check if tesseract is actually executable
-        logger.info("Executing Tesseract OCR...")
         try:
-             raw_text = pytesseract.image_to_string(pil_refined, config="--psm 3").strip()
-             logger.debug("Raw extracted text (first 50 chars): %s", raw_text[:50])
+             # USE THE NEW TEMPLATE EXTRACTOR
+             t_path = os.environ.get("TESSERACT_PATH")
+             extractor = KhoKhoExtractor(t_path)
+             payload = extractor.extract(temp_path)
+             
+             # Check for extraction error
+             if "error" in payload:
+                 return Response({"error": payload["error"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                 
+             # Extract raw text for legacy compatibility / audit
+             raw_text = payload.get("raw_ocr", {}).get("tournament", "") # Sample text
+             missing = payload.get("missing_fields", [])
+             
+             logger.info("Template extraction complete. Confidence: %.2f", payload.get("confidence_summary", 0.0))
         except Exception as t_err:
              logger.exception("Tesseract execution failed")
              return Response({"error": f"Tesseract Engine Error: {t_err}. Check your TESSERACT_PATH in .env or system PATH."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        # Build structured data via parser
-        payload = parse_kho_kho_sheet(raw_text)
-        missing = find_missing_fields(payload)
-        logger.info("Extraction complete. Fields missing: %s", missing)
+        finally:
+             if os.path.exists(temp_path): os.remove(temp_path)
         
         # Confidence logic (stub)
         confidence = 0.8 if raw_text else 0.0
@@ -163,6 +170,7 @@ def upload_image(request):
         }, status=status.HTTP_202_ACCEPTED)
 
     except Exception as exc:
+        logger.exception("Final OCR pipeline stage failed")
         return Response({"error": str(exc)}, status=500)
 
 
