@@ -1,47 +1,679 @@
-INFO 2026-03-21 16:41:01,858 autoreload 22580 17076 Watching for file changes with StatReloader
-INFO 2026-03-21 16:41:46,624 autoreload 22580 17076 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
-INFO 2026-03-21 16:41:47,436 autoreload 20840 4508 Watching for file changes with StatReloader
-INFO 2026-03-21 16:42:56,397 autoreload 20840 4508 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\ocr_preprocessing.py changed, reloading.
-INFO 2026-03-21 16:42:57,285 autoreload 22660 2124 Watching for file changes with StatReloader
-INFO 2026-03-21 16:43:45,644 autoreload 22660 2124 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\ocr_parser.py changed, reloading.
-INFO 2026-03-21 16:43:46,522 autoreload 8088 13608 Watching for file changes with StatReloader
-INFO 2026-03-21 16:44:27,864 autoreload 8088 13608 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\views.py changed, reloading.
-INFO 2026-03-21 16:44:28,642 autoreload 2008 7920 Watching for file changes with StatReloader
-INFO 2026-03-21 16:45:32,646 autoreload 2008 7920 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\apps.py changed, reloading.
-INFO 2026-03-21 16:45:33,386 autoreload 2560 17872 Watching for file changes with StatReloader
-INFO 2026-03-21 16:45:48,326 autoreload 2560 17872 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\views.py changed, reloading.
-INFO 2026-03-21 16:45:49,056 autoreload 12688 21316 Watching for file changes with StatReloader
-INFO 2026-03-21 16:47:41,003 autoreload 18788 19944 Watching for file changes with StatReloader
-INFO 2026-03-21 16:48:13,772 autoreload 18788 19944 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\views.py changed, reloading.
-INFO 2026-03-21 16:48:15,138 autoreload 21488 20404 Watching for file changes with StatReloader
-INFO 2026-03-21 16:48:53,672 basehttp 21488 7920 "GET /api/review/c59e7b5b-6d4d-4f5f-9dbe-8cb0fdc61bcc/ HTTP/1.1" 200 491
-INFO 2026-03-21 16:48:57,764 basehttp 21488 1748 "GET /api/matches/ HTTP/1.1" 200 3849
-INFO 2026-03-21 16:49:21,017 basehttp 21488 1748 "GET /api/matches/ HTTP/1.1" 200 3849
-INFO 2026-03-21 16:49:28,569 ocr_pipeline_views 21488 1748 Upload request received. Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryS3scWukBZjAQYH9K
-INFO 2026-03-21 16:49:28,576 ocr_pipeline_views 21488 1748 Processing multipart file: c13eb192-bc82-494e-8ea2-06ed09773ec3
-INFO 2026-03-21 16:49:28,705 ocr_pipeline_views 21488 1748 Executing Tesseract OCR...
-INFO 2026-03-21 16:49:30,597 ocr_pipeline_views 21488 1748 Extraction complete. Fields missing: ['teamA', 'teamB', 'date', 'venue']
-INFO 2026-03-21 16:49:31,554 basehttp 21488 1748 "POST /api/upload/ HTTP/1.1" 202 442
-INFO 2026-03-21 16:49:32,376 basehttp 21488 1748 "GET /api/review/4de1b100-3ffb-4034-92c9-2385f616f152/ HTTP/1.1" 200 491
-INFO 2026-03-21 17:04:30,883 autoreload 21488 20404 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\ocr_preprocessing.py changed, reloading.
-INFO 2026-03-21 17:04:31,964 autoreload 14712 23448 Watching for file changes with StatReloader
-INFO 2026-03-21 17:05:16,812 autoreload 14712 23448 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
-INFO 2026-03-21 17:05:17,990 autoreload 6500 23296 Watching for file changes with StatReloader
-INFO 2026-03-21 17:05:40,497 autoreload 6500 23296 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
-INFO 2026-03-21 17:05:41,618 autoreload 14668 20048 Watching for file changes with StatReloader
-INFO 2026-03-21 17:06:03,330 autoreload 14668 20048 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\template_extractor.py changed, reloading.
-INFO 2026-03-21 17:06:04,814 autoreload 21128 22380 Watching for file changes with StatReloader
-INFO 2026-03-21 17:06:40,647 autoreload 21128 22380 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\template_extractor.py changed, reloading.
-INFO 2026-03-21 17:06:41,785 autoreload 20196 19948 Watching for file changes with StatReloader
-INFO 2026-03-21 17:07:06,385 autoreload 20196 19948 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
-INFO 2026-03-21 17:07:07,709 autoreload 21420 18852 Watching for file changes with StatReloader
-INFO 2026-03-21 17:08:29,912 autoreload 24100 21352 Watching for file changes with StatReloader
-INFO 2026-03-21 17:08:38,837 basehttp 24100 3808 "GET /api/review/4de1b100-3ffb-4034-92c9-2385f616f152/ HTTP/1.1" 200 491
-INFO 2026-03-21 17:08:40,837 basehttp 24100 7540 "GET /api/matches/ HTTP/1.1" 200 3849
-INFO 2026-03-21 17:08:44,879 basehttp 24100 7540 "GET /api/matches/ HTTP/1.1" 200 3849
-INFO 2026-03-21 17:08:52,023 ocr_pipeline_views 24100 7540 Upload request received. Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryFpWAfg7WDrT1xsLG
-INFO 2026-03-21 17:08:52,040 ocr_pipeline_views 24100 7540 Processing multipart file: c6b465f5-268e-4961-8aae-f50dbed5e1f8
-INFO 2026-03-21 17:08:52,240 template_extractor 24100 7540 Extracting Kho-Kho data from: C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\media\1d6bd6eb-3771-49b0-9f36-38c8e1a4b3a3.png
-INFO 2026-03-21 17:09:01,986 ocr_pipeline_views 24100 7540 Template extraction complete. Confidence: 0.04
-INFO 2026-03-21 17:09:02,796 basehttp 24100 7540 "POST /api/upload/ HTTP/1.1" 202 2113
-INFO 2026-03-21 17:09:03,719 basehttp 24100 7540 "GET /api/review/8c94134c-97f8-4691-8975-d1a15a64bb75/ HTTP/1.1" 200 2194
+INFO 2026-03-21 19:04:35,897 autoreload 2004 19512 Watching for file changes with StatReloader
+INFO 2026-03-21 19:05:08,884 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:08,906 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:08,907 ocr_pipeline_views 2004 8228 Content-Type: multipart/form-data; boundary=----WebKitFormBoundarySDzUKW51vz2EtCGR
+INFO 2026-03-21 19:05:08,907 ocr_pipeline_views 2004 8228 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+INFO 2026-03-21 19:05:08,908 ocr_pipeline_views 2004 8228 Remote Address: 127.0.0.1
+INFO 2026-03-21 19:05:08,908 ocr_pipeline_views 2004 8228 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:05:08,919 ocr_pipeline_views 2004 8228 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:05:08,950 ocr_pipeline_views 2004 8228 Filename: fa7f4c26-0d5c-4bbf-bd83-00726e77f76e
+INFO 2026-03-21 19:05:08,951 ocr_pipeline_views 2004 8228 File Size: 898351 bytes
+INFO 2026-03-21 19:05:08,951 ocr_pipeline_views 2004 8228 Content Type: image/png
+INFO 2026-03-21 19:05:08,986 ocr_pipeline_views 2004 8228 Image Saved to: uploads/7a25f32d-d35f-4008-974a-76dbe53d679a_fa7f4c26-0d5c-4bbf-bd83-00726e77f76e
+INFO 2026-03-21 19:05:09,058 template_extractor_optimized 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:09,069 template_extractor_optimized 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:09,070 template_extractor_optimized 2004 8228 Image Path: C:\Users\Abhishek\Desktop\lego\kho-kho-api\media\e0a5a208-5cdb-4170-bae9-6d0b285607a7.png
+INFO 2026-03-21 19:05:11,935 template_extractor_optimized 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:11,947 template_extractor_optimized 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:11,948 template_extractor_optimized 2004 8228 Overall Confidence: 4.0%
+INFO 2026-03-21 19:05:11,949 template_extractor_optimized 2004 8228 Missing Fields: 4
+INFO 2026-03-21 19:05:11,964 template_extractor_optimized 2004 8228   - Total: 2.86s
+INFO 2026-03-21 19:05:11,964 template_extractor_optimized 2004 8228   - Preprocess: 0.52s
+INFO 2026-03-21 19:05:11,964 template_extractor_optimized 2004 8228   - Extraction: 2.34s
+INFO 2026-03-21 19:05:11,964 template_extractor_optimized 2004 8228   - Cache size: 19
+INFO 2026-03-21 19:05:11,965 template_extractor_optimized 2004 8228 ================================================================================
+WARNING 2026-03-21 19:05:12,008 ocr_pipeline_views 2004 8228 Missing Fields Details: ['match_info.date', 'match_info.time', 'match_info.match_no', 'match_info.choice']
+INFO 2026-03-21 19:05:12,009 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:12,021 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:12,026 ocr_pipeline_views 2004 8228 Generated Request ID: 70d51531-2df1-4cc6-8d5e-7763339e2ca7
+INFO 2026-03-21 19:05:12,026 ocr_pipeline_views 2004 8228 User ID: anonymous
+INFO 2026-03-21 19:05:12,027 ocr_pipeline_views 2004 8228 Document Type: scoresheet
+INFO 2026-03-21 19:05:12,027 ocr_pipeline_views 2004 8228 Image URL: uploads/7a25f32d-d35f-4008-974a-76dbe53d679a_fa7f4c26-0d5c-4bbf-bd83-00726e77f76e
+INFO 2026-03-21 19:05:12,337 ocr_pipeline_views 2004 8228 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:05:12,347 ocr_pipeline_views 2004 8228 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:05:12,348 ocr_pipeline_views 2004 8228 {
+  "match_info": {
+    "date": "__MISSING__",
+    "time": "__MISSING__",
+    "tournament": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "group": "oO oO =e",
+    "toss_won": "oO oO =e",
+    "match_no": "__MISSING__",
+    "court_no": "ONENESS",
+    "section": "jaw SST MENS = WOMENS",
+    "choice": "__MISSING__"
+  },
+  "teams": {
+    "team_a": {
+      "players": [],
+      "name": "__MISSING__"
+    },
+    "team_b": {
+      "players": [],
+      "name": "__MISSING__"
+    }
+  },
+  "score": {
+    "team_a_points": "__MISSING__",
+    "team_b_points": "__MISSING__"
+  },
+  "officials": {
+    "scorer": "ee Se",
+    "umpire": "__MISSING__",
+    "referee": "__MISSING__",
+    "timekeeper": "__MISSING__"
+  },
+  "remarks": "pe ; NUHARASE a LED KAT PESOCIET:",
+  "raw_ocr": {
+    "date": "",
+    "time": "",
+    "tournament": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "group": "oO oO =e",
+    "toss_won": "oO oO =e",
+    "match_no": "",
+    "court_no": "ONENESS",
+    "section": "jaw SST MENS = WOMENS",
+    "choice": ""
+  },
+  "missing_fields": [
+    "match_info.date",
+    "match_info.time",
+    "match_info.match_no",
+    "match_info.choice"
+  ],
+  "confidence_summary": 0.040103968253968246,
+  "_performance": {
+    "total_time_ms": 2864,
+    "preprocess_time_ms": 522,
+    "match_extraction_ms": 568,
+    "players_extraction_ms": 365,
+    "cache_size": 19,
+    "fast_mode": false,
+    "threading_enabled": true
+  }
+}
+INFO 2026-03-21 19:05:12,349 ocr_pipeline_views 2004 8228 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:05:12,409 ocr_pipeline_views 2004 8228   - Confidence Score stored: 0.0401
+INFO 2026-03-21 19:05:12,409 ocr_pipeline_views 2004 8228   - Missing Fields stored: ['match_info.date', 'match_info.time', 'match_info.match_no', 'match_info.choice']
+INFO 2026-03-21 19:05:12,409 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:12,427 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:12,433 log 2004 8228 "POST /api/upload/ HTTP/1.1" 202 1300
+INFO 2026-03-21 19:05:12,489 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:12,500 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:12,501 ocr_pipeline_views 2004 8228 Request ID: 70d51531-2df1-4cc6-8d5e-7763339e2ca7
+INFO 2026-03-21 19:05:12,834 ocr_pipeline_views 2004 8228 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:05:12,843 ocr_pipeline_views 2004 8228 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:05:12,844 ocr_pipeline_views 2004 8228 Confidence Score: 0.0401
+INFO 2026-03-21 19:05:12,844 ocr_pipeline_views 2004 8228 Missing Fields: ['match_info.date', 'match_info.time', 'match_info.match_no', 'match_info.choice']
+INFO 2026-03-21 19:05:12,844 ocr_pipeline_views 2004 8228 Current Payload:
+INFO 2026-03-21 19:05:12,845 ocr_pipeline_views 2004 8228 {
+  "score": {
+    "team_a_points": "__MISSING__",
+    "team_b_points": "__MISSING__"
+  },
+  "teams": {
+    "team_a": {
+      "name": "__MISSING__",
+      "players": []
+    },
+    "team_b": {
+      "name": "__MISSING__",
+      "players": []
+    }
+  },
+  "raw_ocr": {
+    "date": "",
+    "time": "",
+    "group": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "choice": "",
+    "section": "jaw SST MENS = WOMENS",
+    "court_no": "ONENESS",
+    "match_no": "",
+    "toss_won": "oO oO =e",
+    "tournament": "oO oO =e"
+  },
+  "remarks": "pe ; NUHARASE a LED KAT PESOCIET:",
+  "officials": {
+    "scorer": "ee Se",
+    "umpire": "__MISSING__",
+    "referee": "__MISSING__",
+    "timekeeper": "__MISSING__"
+  },
+  "match_info": {
+    "date": "__MISSING__",
+    "time": "__MISSING__",
+    "group": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "choice": "__MISSING__",
+    "section": "jaw SST MENS = WOMENS",
+    "court_no": "ONENESS",
+    "match_no": "__MISSING__",
+    "toss_won": "oO oO =e",
+    "tournament": "oO oO =e"
+  },
+  "_performance": {
+    "fast_mode": false,
+    "cache_size": 19,
+    "total_time_ms": 2864,
+    "threading_enabled": true,
+    "preprocess_time_ms": 522,
+    "match_extraction_ms": 568,
+    "players_extraction_ms": 365
+  },
+  "missing_fields": [
+    "match_info.date",
+    "match_info.time",
+    "match_info.match_no",
+    "match_info.choice"
+  ],
+  "confidence_summary": 0.040103968253968246
+}
+INFO 2026-03-21 19:05:12,846 ocr_pipeline_views 2004 8228 ================================================================================
+INFO 2026-03-21 19:05:12,847 log 2004 8228 "GET /api/review/70d51531-2df1-4cc6-8d5e-7763339e2ca7/ HTTP/1.1" 200 1411
+INFO 2026-03-21 19:07:52,268 autoreload 2004 19512 C:\Users\Abhishek\Desktop\lego\kho-kho-api\kho_kho_project\settings.py changed, reloading.
+INFO 2026-03-21 19:09:27,600 autoreload 2952 692 Watching for file changes with StatReloader
+INFO 2026-03-21 19:10:10,233 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:10,234 ocr_pipeline_views 2952 13536 📤 NEW IMAGE UPLOAD REQUEST RECEIVED
+INFO 2026-03-21 19:10:10,234 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:10,234 ocr_pipeline_views 2952 13536 Content-Type: multipart/form-data; boundary=----WebKitFormBoundarypurThz9JvuzSTPj2
+INFO 2026-03-21 19:10:10,235 ocr_pipeline_views 2952 13536 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+INFO 2026-03-21 19:10:10,235 ocr_pipeline_views 2952 13536 Remote Address: 127.0.0.1
+INFO 2026-03-21 19:10:10,235 ocr_pipeline_views 2952 13536 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:10:10,235 ocr_pipeline_views 2952 13536 📥 STEP 1: ACQUIRING IMAGE DATA
+INFO 2026-03-21 19:10:10,236 ocr_pipeline_views 2952 13536 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:10:10,241 ocr_pipeline_views 2952 13536 ✅ Multipart file detected
+INFO 2026-03-21 19:10:10,241 ocr_pipeline_views 2952 13536 Filename: 40adfb49-bdf7-4cbf-b329-2495f615e546
+INFO 2026-03-21 19:10:10,242 ocr_pipeline_views 2952 13536 File Size: 898351 bytes
+INFO 2026-03-21 19:10:10,242 ocr_pipeline_views 2952 13536 Content Type: image/png
+INFO 2026-03-21 19:10:10,271 ocr_pipeline_views 2952 13536 ✅ Multipart file decoded successfully
+INFO 2026-03-21 19:10:10,271 ocr_pipeline_views 2952 13536 Image Saved to: uploads/3f4d68e1-be70-4708-b077-21693e7429e1_40adfb49-bdf7-4cbf-b329-2495f615e546
+INFO 2026-03-21 19:10:10,271 ocr_pipeline_views 2952 13536 ✅ Image acquisition complete. Image shape: (719, 982, 3)
+INFO 2026-03-21 19:10:10,310 ocr_pipeline_views 2952 13536 📦 Initializing OPTIMIZED Extractor (fast_mode=False, threading=True)
+INFO 2026-03-21 19:10:10,311 ocr_pipeline_views 2952 13536 🔄 Starting template extraction...
+INFO 2026-03-21 19:10:10,311 template_extractor_optimized 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:10,311 template_extractor_optimized 2952 13536 🚀 STARTING OPTIMIZED EXTRACTION (fast_mode=False, threading=True)
+INFO 2026-03-21 19:10:10,312 template_extractor_optimized 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:10,312 template_extractor_optimized 2952 13536 Image Path: C:\Users\Abhishek\Desktop\lego\kho-kho-api\media\7d0989dc-d84e-4a2d-8f9e-0b10337f89dd.png
+INFO 2026-03-21 19:10:10,331 template_extractor_optimized 2952 13536 ✅ Image loaded. Shape: (719, 982, 3) (2.12MB)
+INFO 2026-03-21 19:10:10,846 template_extractor_optimized 2952 13536 ✅ Preprocessing completed in 0.51s
+INFO 2026-03-21 19:10:10,846 template_extractor_optimized 2952 13536 📋 Step 2: Extracting Match Information (parallel)...
+WARNING 2026-03-21 19:10:11,144 template_extractor_optimized 2952 6716 ⚠️  Missing: date
+WARNING 2026-03-21 19:10:11,151 template_extractor_optimized 2952 20708 ⚠️  Missing: time
+WARNING 2026-03-21 19:10:11,361 template_extractor_optimized 2952 20708 ⚠️  Missing: match_no
+WARNING 2026-03-21 19:10:11,460 template_extractor_optimized 2952 8744 ⚠️  Missing: choice
+INFO 2026-03-21 19:10:11,462 template_extractor_optimized 2952 13536 ✅ Match info extracted in 0.62s
+INFO 2026-03-21 19:10:11,462 template_extractor_optimized 2952 13536 📋 Step 3: Extracting Team Names...
+WARNING 2026-03-21 19:10:11,638 template_extractor_optimized 2952 16892 ⚠️  Missing: team_b_name
+WARNING 2026-03-21 19:10:11,644 template_extractor_optimized 2952 16968 ⚠️  Missing: team_a_name
+INFO 2026-03-21 19:10:11,645 template_extractor_optimized 2952 13536 ✅ Teams extracted: __MISSING__ vs __MISSING__
+INFO 2026-03-21 19:10:11,645 template_extractor_optimized 2952 13536 📋 Step 4: Extracting Players...
+INFO 2026-03-21 19:10:11,813 template_extractor_optimized 2952 13536 ✅ TEAM_A: 0 players extracted
+INFO 2026-03-21 19:10:11,994 template_extractor_optimized 2952 13536 ✅ TEAM_B: 0 players extracted
+INFO 2026-03-21 19:10:11,995 template_extractor_optimized 2952 13536 📋 Step 5: Extracting Officials...
+INFO 2026-03-21 19:10:12,672 template_extractor_optimized 2952 13536 ✅ Officials extracted: 4 positions
+INFO 2026-03-21 19:10:12,673 template_extractor_optimized 2952 13536 📋 Step 6: Extracting Scores...
+WARNING 2026-03-21 19:10:12,862 template_extractor_optimized 2952 15232 ⚠️  Missing: team_a_points
+WARNING 2026-03-21 19:10:12,868 template_extractor_optimized 2952 2228 ⚠️  Missing: team_b_points
+INFO 2026-03-21 19:10:12,868 template_extractor_optimized 2952 13536 ✅ Scores extracted: Team A=__MISSING__, Team B=__MISSING__
+INFO 2026-03-21 19:10:12,869 template_extractor_optimized 2952 13536 📋 Step 7: Extracting Remarks...
+INFO 2026-03-21 19:10:13,080 template_extractor_optimized 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,080 template_extractor_optimized 2952 13536 ✅ EXTRACTION COMPLETE
+INFO 2026-03-21 19:10:13,081 template_extractor_optimized 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,081 template_extractor_optimized 2952 13536 Overall Confidence: 4.0%
+INFO 2026-03-21 19:10:13,081 template_extractor_optimized 2952 13536 Missing Fields: 4
+INFO 2026-03-21 19:10:13,081 template_extractor_optimized 2952 13536 ⏱️  Performance:
+INFO 2026-03-21 19:10:13,082 template_extractor_optimized 2952 13536   - Total: 2.77s
+INFO 2026-03-21 19:10:13,082 template_extractor_optimized 2952 13536   - Preprocess: 0.51s
+INFO 2026-03-21 19:10:13,082 template_extractor_optimized 2952 13536   - Extraction: 2.25s
+INFO 2026-03-21 19:10:13,083 template_extractor_optimized 2952 13536   - Cache size: 19
+INFO 2026-03-21 19:10:13,083 template_extractor_optimized 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,083 ocr_pipeline_views 2952 13536 ⚡ Performance Metrics: {
+  "total_time_ms": 2767,
+  "preprocess_time_ms": 513,
+  "match_extraction_ms": 615,
+  "players_extraction_ms": 349,
+  "cache_size": 19,
+  "fast_mode": false,
+  "threading_enabled": true
+}
+INFO 2026-03-21 19:10:13,084 ocr_pipeline_views 2952 13536 ✅ Template extraction complete
+INFO 2026-03-21 19:10:13,084 ocr_pipeline_views 2952 13536 📊 Confidence Score: 4.01%
+INFO 2026-03-21 19:10:13,084 ocr_pipeline_views 2952 13536 ⚠️  Missing Fields Count: 4
+WARNING 2026-03-21 19:10:13,085 ocr_pipeline_views 2952 13536 Missing Fields Details: ['match_info.date', 'match_info.time', 'match_info.match_no', 'match_info.choice']
+INFO 2026-03-21 19:10:13,086 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,086 ocr_pipeline_views 2952 13536 💾 STORING EXTRACTED DATA IN DATABASE
+INFO 2026-03-21 19:10:13,087 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,087 ocr_pipeline_views 2952 13536 Generated Request ID: f75cfd8a-e06b-4440-ba0b-581c5731ee73
+INFO 2026-03-21 19:10:13,088 ocr_pipeline_views 2952 13536 User ID: anonymous
+INFO 2026-03-21 19:10:13,088 ocr_pipeline_views 2952 13536 Document Type: scoresheet
+INFO 2026-03-21 19:10:13,088 ocr_pipeline_views 2952 13536 Image URL: uploads/3f4d68e1-be70-4708-b077-21693e7429e1_40adfb49-bdf7-4cbf-b329-2495f615e546
+INFO 2026-03-21 19:10:13,363 ocr_pipeline_views 2952 13536 ✅ UploadRequest created in DB: f75cfd8a-e06b-4440-ba0b-581c5731ee73
+INFO 2026-03-21 19:10:13,363 ocr_pipeline_views 2952 13536 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:10:13,363 ocr_pipeline_views 2952 13536 📋 FULL EXTRACTED DATA PAYLOAD:
+INFO 2026-03-21 19:10:13,364 ocr_pipeline_views 2952 13536 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:10:13,364 ocr_pipeline_views 2952 13536 {
+  "match_info": {
+    "date": "__MISSING__",
+    "time": "__MISSING__",
+    "tournament": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "group": "oO oO =e",
+    "toss_won": "oO oO =e",
+    "match_no": "__MISSING__",
+    "court_no": "ONENESS",
+    "section": "jaw SST MENS = WOMENS",
+    "choice": "__MISSING__"
+  },
+  "teams": {
+    "team_a": {
+      "players": [],
+      "name": "__MISSING__"
+    },
+    "team_b": {
+      "players": [],
+      "name": "__MISSING__"
+    }
+  },
+  "score": {
+    "team_a_points": "__MISSING__",
+    "team_b_points": "__MISSING__"
+  },
+  "officials": {
+    "scorer": "ee Se",
+    "umpire": "__MISSING__",
+    "referee": "__MISSING__",
+    "timekeeper": "__MISSING__"
+  },
+  "remarks": "pe ; NUHARASE a LED KAT PESOCIET:",
+  "raw_ocr": {
+    "date": "",
+    "time": "",
+    "tournament": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "group": "oO oO =e",
+    "toss_won": "oO oO =e",
+    "match_no": "",
+    "court_no": "ONENESS",
+    "section": "jaw SST MENS = WOMENS",
+    "choice": ""
+  },
+  "missing_fields": [
+    "match_info.date",
+    "match_info.time",
+    "match_info.match_no",
+    "match_info.choice"
+  ],
+  "confidence_summary": 0.040103968253968246,
+  "_performance": {
+    "total_time_ms": 2767,
+    "preprocess_time_ms": 513,
+    "match_extraction_ms": 615,
+    "players_extraction_ms": 349,
+    "cache_size": 19,
+    "fast_mode": false,
+    "threading_enabled": true
+  }
+}
+INFO 2026-03-21 19:10:13,365 ocr_pipeline_views 2952 13536 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:10:13,405 ocr_pipeline_views 2952 13536 ✅ ExtractedData record created in DB
+INFO 2026-03-21 19:10:13,406 ocr_pipeline_views 2952 13536   - Confidence Score stored: 0.0401
+INFO 2026-03-21 19:10:13,406 ocr_pipeline_views 2952 13536   - Missing Fields stored: ['match_info.date', 'match_info.time', 'match_info.match_no', 'match_info.choice']
+INFO 2026-03-21 19:10:13,406 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,406 ocr_pipeline_views 2952 13536 ⏱️  Total Processing Time: 3171 ms
+INFO 2026-03-21 19:10:13,407 ocr_pipeline_views 2952 13536 🎉 OCR UPLOAD AND EXTRACTION COMPLETE
+INFO 2026-03-21 19:10:13,407 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,413 log 2952 13536 "POST /api/upload/ HTTP/1.1" 202 1300
+INFO 2026-03-21 19:10:13,469 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,470 ocr_pipeline_views 2952 13536 📖 FETCHING EXTRACTED DATA FOR REVIEW
+INFO 2026-03-21 19:10:13,470 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,470 ocr_pipeline_views 2952 13536 Request ID: f75cfd8a-e06b-4440-ba0b-581c5731ee73
+INFO 2026-03-21 19:10:13,711 ocr_pipeline_views 2952 13536 ✅ UploadRequest found with status: EXTRACTED
+INFO 2026-03-21 19:10:13,741 ocr_pipeline_views 2952 13536 ✅ ExtractedData found
+INFO 2026-03-21 19:10:13,741 ocr_pipeline_views 2952 13536 ℹ️  Using raw extracted payload
+INFO 2026-03-21 19:10:13,742 ocr_pipeline_views 2952 13536 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:10:13,742 ocr_pipeline_views 2952 13536 📋 RETURNING EXTRACTED DATA:
+INFO 2026-03-21 19:10:13,742 ocr_pipeline_views 2952 13536 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:10:13,742 ocr_pipeline_views 2952 13536 Confidence Score: 0.0401
+INFO 2026-03-21 19:10:13,743 ocr_pipeline_views 2952 13536 Missing Fields: ['match_info.date', 'match_info.time', 'match_info.match_no', 'match_info.choice']
+INFO 2026-03-21 19:10:13,743 ocr_pipeline_views 2952 13536 Current Payload:
+INFO 2026-03-21 19:10:13,743 ocr_pipeline_views 2952 13536 {
+  "score": {
+    "team_a_points": "__MISSING__",
+    "team_b_points": "__MISSING__"
+  },
+  "teams": {
+    "team_a": {
+      "name": "__MISSING__",
+      "players": []
+    },
+    "team_b": {
+      "name": "__MISSING__",
+      "players": []
+    }
+  },
+  "raw_ocr": {
+    "date": "",
+    "time": "",
+    "group": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "choice": "",
+    "section": "jaw SST MENS = WOMENS",
+    "court_no": "ONENESS",
+    "match_no": "",
+    "toss_won": "oO oO =e",
+    "tournament": "oO oO =e"
+  },
+  "remarks": "pe ; NUHARASE a LED KAT PESOCIET:",
+  "officials": {
+    "scorer": "ee Se",
+    "umpire": "__MISSING__",
+    "referee": "__MISSING__",
+    "timekeeper": "__MISSING__"
+  },
+  "match_info": {
+    "date": "__MISSING__",
+    "time": "__MISSING__",
+    "group": "oO oO =e",
+    "venue": "| ATADD ADI ASTON 4 RleD ita acer ee AE Gh, wm Lp ests 1+ an oe",
+    "choice": "__MISSING__",
+    "section": "jaw SST MENS = WOMENS",
+    "court_no": "ONENESS",
+    "match_no": "__MISSING__",
+    "toss_won": "oO oO =e",
+    "tournament": "oO oO =e"
+  },
+  "_performance": {
+    "fast_mode": false,
+    "cache_size": 19,
+    "total_time_ms": 2767,
+    "threading_enabled": true,
+    "preprocess_time_ms": 513,
+    "match_extraction_ms": 615,
+    "players_extraction_ms": 349
+  },
+  "missing_fields": [
+    "match_info.date",
+    "match_info.time",
+    "match_info.match_no",
+    "match_info.choice"
+  ],
+  "confidence_summary": 0.040103968253968246
+}
+INFO 2026-03-21 19:10:13,744 ocr_pipeline_views 2952 13536 ================================================================================
+INFO 2026-03-21 19:10:13,745 log 2952 13536 "GET /api/review/f75cfd8a-e06b-4440-ba0b-581c5731ee73/ HTTP/1.1" 200 1411
+INFO 2026-03-21 19:12:01,422 autoreload 2952 692 C:\Users\Abhishek\Desktop\lego\kho-kho-api\core\utils\roi_config.py changed, reloading.
+INFO 2026-03-21 19:12:03,046 autoreload 2964 19728 Watching for file changes with StatReloader
+INFO 2026-03-21 19:13:04,308 autoreload 2964 19728 C:\Users\Abhishek\Desktop\lego\kho-kho-api\core\utils\roi_config.py changed, reloading.
+INFO 2026-03-21 19:13:05,998 autoreload 6652 14976 Watching for file changes with StatReloader
+INFO 2026-03-21 19:13:23,581 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:23,582 ocr_pipeline_views 6652 14076 📤 NEW IMAGE UPLOAD REQUEST RECEIVED
+INFO 2026-03-21 19:13:23,582 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:23,583 ocr_pipeline_views 6652 14076 Content-Type: multipart/form-data; boundary=----WebKitFormBoundarydTW8GZIBz9ADW1VW
+INFO 2026-03-21 19:13:23,584 ocr_pipeline_views 6652 14076 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+INFO 2026-03-21 19:13:23,584 ocr_pipeline_views 6652 14076 Remote Address: 127.0.0.1
+INFO 2026-03-21 19:13:23,584 ocr_pipeline_views 6652 14076 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:13:23,585 ocr_pipeline_views 6652 14076 📥 STEP 1: ACQUIRING IMAGE DATA
+INFO 2026-03-21 19:13:23,586 ocr_pipeline_views 6652 14076 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:13:23,591 ocr_pipeline_views 6652 14076 ✅ Multipart file detected
+INFO 2026-03-21 19:13:23,591 ocr_pipeline_views 6652 14076 Filename: a103bfc6-79d4-41df-8022-a467152530de
+INFO 2026-03-21 19:13:23,591 ocr_pipeline_views 6652 14076 File Size: 898351 bytes
+INFO 2026-03-21 19:13:23,592 ocr_pipeline_views 6652 14076 Content Type: image/png
+INFO 2026-03-21 19:13:23,617 ocr_pipeline_views 6652 14076 ✅ Multipart file decoded successfully
+INFO 2026-03-21 19:13:23,617 ocr_pipeline_views 6652 14076 Image Saved to: uploads/8100a270-efe5-4bb6-b56c-97d80f7169d5_a103bfc6-79d4-41df-8022-a467152530de
+INFO 2026-03-21 19:13:23,617 ocr_pipeline_views 6652 14076 ✅ Image acquisition complete. Image shape: (719, 982, 3)
+INFO 2026-03-21 19:13:23,659 ocr_pipeline_views 6652 14076 📦 Initializing OPTIMIZED Extractor (fast_mode=False, threading=True)
+INFO 2026-03-21 19:13:23,660 ocr_pipeline_views 6652 14076 🔄 Starting template extraction...
+INFO 2026-03-21 19:13:23,660 template_extractor_optimized 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:23,661 template_extractor_optimized 6652 14076 🚀 STARTING OPTIMIZED EXTRACTION (fast_mode=False, threading=True)
+INFO 2026-03-21 19:13:23,661 template_extractor_optimized 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:23,661 template_extractor_optimized 6652 14076 Image Path: C:\Users\Abhishek\Desktop\lego\kho-kho-api\media\a6b7868d-9e31-472b-93dd-87d324d91bae.png
+INFO 2026-03-21 19:13:23,682 template_extractor_optimized 6652 14076 ✅ Image loaded. Shape: (719, 982, 3) (2.12MB)
+INFO 2026-03-21 19:13:24,268 template_extractor_optimized 6652 14076 ✅ Preprocessing completed in 0.59s
+INFO 2026-03-21 19:13:24,269 template_extractor_optimized 6652 14076 📋 Step 2: Extracting Match Information (parallel)...
+WARNING 2026-03-21 19:13:24,579 template_extractor_optimized 6652 20388 ⚠️  Missing: venue
+WARNING 2026-03-21 19:13:24,594 template_extractor_optimized 6652 8180 ⚠️  Missing: date
+WARNING 2026-03-21 19:13:24,595 template_extractor_optimized 6652 9964 ⚠️  Missing: time
+WARNING 2026-03-21 19:13:24,791 template_extractor_optimized 6652 8180 ⚠️  Missing: section
+WARNING 2026-03-21 19:13:24,791 template_extractor_optimized 6652 8744 ⚠️  Missing: match_no
+WARNING 2026-03-21 19:13:24,809 template_extractor_optimized 6652 9964 ⚠️  Missing: group
+WARNING 2026-03-21 19:13:24,970 template_extractor_optimized 6652 8180 ⚠️  Missing: toss_won
+WARNING 2026-03-21 19:13:24,976 template_extractor_optimized 6652 8744 ⚠️  Missing: choice
+INFO 2026-03-21 19:13:24,977 template_extractor_optimized 6652 14076 ✅ Match info extracted in 0.71s
+INFO 2026-03-21 19:13:24,977 template_extractor_optimized 6652 14076 📋 Step 3: Extracting Team Names...
+WARNING 2026-03-21 19:13:25,172 template_extractor_optimized 6652 3588 ⚠️  Missing: team_b_name
+WARNING 2026-03-21 19:13:25,172 template_extractor_optimized 6652 2752 ⚠️  Missing: team_a_name
+INFO 2026-03-21 19:13:25,173 template_extractor_optimized 6652 14076 ✅ Teams extracted: __MISSING__ vs __MISSING__
+INFO 2026-03-21 19:13:25,173 template_extractor_optimized 6652 14076 📋 Step 4: Extracting Players...
+INFO 2026-03-21 19:13:25,468 template_extractor_optimized 6652 14076 ✅ TEAM_A: 1 players extracted
+INFO 2026-03-21 19:13:25,746 template_extractor_optimized 6652 14076 ✅ TEAM_B: 1 players extracted
+INFO 2026-03-21 19:13:25,746 template_extractor_optimized 6652 14076 📋 Step 5: Extracting Officials...
+INFO 2026-03-21 19:13:26,456 template_extractor_optimized 6652 14076 ✅ Officials extracted: 4 positions
+INFO 2026-03-21 19:13:26,456 template_extractor_optimized 6652 14076 📋 Step 6: Extracting Scores...
+WARNING 2026-03-21 19:13:26,629 template_extractor_optimized 6652 3888 ⚠️  Missing: team_a_points
+WARNING 2026-03-21 19:13:26,635 template_extractor_optimized 6652 8824 ⚠️  Missing: team_b_points
+INFO 2026-03-21 19:13:26,636 template_extractor_optimized 6652 14076 ✅ Scores extracted: Team A=__MISSING__, Team B=__MISSING__
+INFO 2026-03-21 19:13:26,637 template_extractor_optimized 6652 14076 📋 Step 7: Extracting Remarks...
+INFO 2026-03-21 19:13:26,947 template_extractor_optimized 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:26,947 template_extractor_optimized 6652 14076 ✅ EXTRACTION COMPLETE
+INFO 2026-03-21 19:13:26,947 template_extractor_optimized 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:26,948 template_extractor_optimized 6652 14076 Overall Confidence: 2.7%
+INFO 2026-03-21 19:13:26,948 template_extractor_optimized 6652 14076 Missing Fields: 8
+INFO 2026-03-21 19:13:26,948 template_extractor_optimized 6652 14076 ⏱️  Performance:
+INFO 2026-03-21 19:13:26,949 template_extractor_optimized 6652 14076   - Total: 3.28s
+INFO 2026-03-21 19:13:26,949 template_extractor_optimized 6652 14076   - Preprocess: 0.59s
+INFO 2026-03-21 19:13:26,949 template_extractor_optimized 6652 14076   - Extraction: 2.70s
+INFO 2026-03-21 19:13:26,949 template_extractor_optimized 6652 14076   - Cache size: 21
+INFO 2026-03-21 19:13:26,950 template_extractor_optimized 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:26,950 ocr_pipeline_views 6652 14076 ⚡ Performance Metrics: {
+  "total_time_ms": 3284,
+  "preprocess_time_ms": 585,
+  "match_extraction_ms": 707,
+  "players_extraction_ms": 572,
+  "cache_size": 21,
+  "fast_mode": false,
+  "threading_enabled": true
+}
+INFO 2026-03-21 19:13:26,951 ocr_pipeline_views 6652 14076 ✅ Template extraction complete
+INFO 2026-03-21 19:13:26,951 ocr_pipeline_views 6652 14076 📊 Confidence Score: 2.65%
+INFO 2026-03-21 19:13:26,951 ocr_pipeline_views 6652 14076 ⚠️  Missing Fields Count: 8
+WARNING 2026-03-21 19:13:26,952 ocr_pipeline_views 6652 14076 Missing Fields Details: ['match_info.venue', 'match_info.date', 'match_info.time', 'match_info.section', 'match_info.match_no', 'match_info.group', 'match_info.toss_won', 'match_info.choice']
+INFO 2026-03-21 19:13:26,953 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:26,953 ocr_pipeline_views 6652 14076 💾 STORING EXTRACTED DATA IN DATABASE
+INFO 2026-03-21 19:13:26,953 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:26,954 ocr_pipeline_views 6652 14076 Generated Request ID: f48813cd-50cb-4c2a-bf73-a59eab76b882
+INFO 2026-03-21 19:13:26,954 ocr_pipeline_views 6652 14076 User ID: anonymous
+INFO 2026-03-21 19:13:26,954 ocr_pipeline_views 6652 14076 Document Type: scoresheet
+INFO 2026-03-21 19:13:26,954 ocr_pipeline_views 6652 14076 Image URL: uploads/8100a270-efe5-4bb6-b56c-97d80f7169d5_a103bfc6-79d4-41df-8022-a467152530de
+INFO 2026-03-21 19:13:27,260 ocr_pipeline_views 6652 14076 ✅ UploadRequest created in DB: f48813cd-50cb-4c2a-bf73-a59eab76b882
+INFO 2026-03-21 19:13:27,261 ocr_pipeline_views 6652 14076 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:13:27,261 ocr_pipeline_views 6652 14076 📋 FULL EXTRACTED DATA PAYLOAD:
+INFO 2026-03-21 19:13:27,261 ocr_pipeline_views 6652 14076 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:13:27,262 ocr_pipeline_views 6652 14076 {
+  "match_info": {
+    "venue": "__MISSING__",
+    "tournament": "nH ro",
+    "date": "__MISSING__",
+    "time": "__MISSING__",
+    "section": "__MISSING__",
+    "match_no": "__MISSING__",
+    "court_no": "\u2014_ \u2014 * eee ree",
+    "group": "__MISSING__",
+    "toss_won": "__MISSING__",
+    "choice": "__MISSING__"
+  },
+  "teams": {
+    "team_a": {
+      "players": [
+        {
+          "no": 1,
+          "name": "m SEs ann ae et dae iL |zyp- =? \u2014_. aa rT ath le TELS Te Hyde gas (FT a ede ae SO",
+          "raw": "m SEs ann ae et dae iL |zyp- =? \u2014_. aa rT ath le TELS Te Hyde gas (FT a ede ae SO",
+          "confidence": 0.1793548387096774
+        }
+      ],
+      "name": "__MISSING__"
+    },
+    "team_b": {
+      "players": [
+        {
+          "no": 1,
+          "name": "_ as . ae He, =| Sere Te TRS ie Lie! wien fo ele",
+          "raw": "_ as . ae He, =| Sere Te TRS ie Lie! wien fo ele",
+          "confidence": 0.157
+        }
+      ],
+      "name": "__MISSING__"
+    }
+  },
+  "score": {
+    "team_a_points": "__MISSING__",
+    "team_b_points": "__MISSING__"
+  },
+  "officials": {
+    "scorer": "__MISSING__",
+    "umpire": "__MISSING__",
+    "referee": "0 0 ee ete",
+    "timekeeper": "__MISSING__"
+  },
+  "remarks": "ee ee F| pee les GENERALSEORETARE pM feteere pect eg Rt REAR as Ne ap tennit cn a ABIREASI'R8 EEUAATESSOCET 7 ceetewneste eens meetin OEE wn va we",
+  "raw_ocr": {
+    "venue": "",
+    "tournament": "nH ro",
+    "date": "",
+    "time": "",
+    "section": "",
+    "match_no": "",
+    "court_no": "\u2014_ \u2014 * eee ree",
+    "group": "",
+    "toss_won": "",
+    "choice": ""
+  },
+  "missing_fields": [
+    "match_info.venue",
+    "match_info.date",
+    "match_info.time",
+    "match_info.section",
+    "match_info.match_no",
+    "match_info.group",
+    "match_info.toss_won",
+    "match_info.choice"
+  ],
+  "confidence_summary": 0.026505241935483863,
+  "_performance": {
+    "total_time_ms": 3284,
+    "preprocess_time_ms": 585,
+    "match_extraction_ms": 707,
+    "players_extraction_ms": 572,
+    "cache_size": 21,
+    "fast_mode": false,
+    "threading_enabled": true
+  }
+}
+INFO 2026-03-21 19:13:27,263 ocr_pipeline_views 6652 14076 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:13:27,307 ocr_pipeline_views 6652 14076 ✅ ExtractedData record created in DB
+INFO 2026-03-21 19:13:27,308 ocr_pipeline_views 6652 14076   - Confidence Score stored: 0.0265
+INFO 2026-03-21 19:13:27,309 ocr_pipeline_views 6652 14076   - Missing Fields stored: ['match_info.venue', 'match_info.date', 'match_info.time', 'match_info.section', 'match_info.match_no', 'match_info.group', 'match_info.toss_won', 'match_info.choice']
+INFO 2026-03-21 19:13:27,309 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:27,310 ocr_pipeline_views 6652 14076 ⏱️  Total Processing Time: 3725 ms
+INFO 2026-03-21 19:13:27,310 ocr_pipeline_views 6652 14076 🎉 OCR UPLOAD AND EXTRACTION COMPLETE
+INFO 2026-03-21 19:13:27,311 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:27,318 log 6652 14076 "POST /api/upload/ HTTP/1.1" 202 1726
+INFO 2026-03-21 19:13:27,379 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:27,379 ocr_pipeline_views 6652 14076 📖 FETCHING EXTRACTED DATA FOR REVIEW
+INFO 2026-03-21 19:13:27,379 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:27,380 ocr_pipeline_views 6652 14076 Request ID: f48813cd-50cb-4c2a-bf73-a59eab76b882
+INFO 2026-03-21 19:13:27,655 ocr_pipeline_views 6652 14076 ✅ UploadRequest found with status: EXTRACTED
+INFO 2026-03-21 19:13:27,690 ocr_pipeline_views 6652 14076 ✅ ExtractedData found
+INFO 2026-03-21 19:13:27,691 ocr_pipeline_views 6652 14076 ℹ️  Using raw extracted payload
+INFO 2026-03-21 19:13:27,691 ocr_pipeline_views 6652 14076 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:13:27,691 ocr_pipeline_views 6652 14076 📋 RETURNING EXTRACTED DATA:
+INFO 2026-03-21 19:13:27,692 ocr_pipeline_views 6652 14076 --------------------------------------------------------------------------------
+INFO 2026-03-21 19:13:27,692 ocr_pipeline_views 6652 14076 Confidence Score: 0.0265
+INFO 2026-03-21 19:13:27,692 ocr_pipeline_views 6652 14076 Missing Fields: ['match_info.venue', 'match_info.date', 'match_info.time', 'match_info.section', 'match_info.match_no', 'match_info.group', 'match_info.toss_won', 'match_info.choice']
+INFO 2026-03-21 19:13:27,692 ocr_pipeline_views 6652 14076 Current Payload:
+INFO 2026-03-21 19:13:27,693 ocr_pipeline_views 6652 14076 {
+  "score": {
+    "team_a_points": "__MISSING__",
+    "team_b_points": "__MISSING__"
+  },
+  "teams": {
+    "team_a": {
+      "name": "__MISSING__",
+      "players": [
+        {
+          "no": 1,
+          "raw": "m SEs ann ae et dae iL |zyp- =? \u2014_. aa rT ath le TELS Te Hyde gas (FT a ede ae SO",
+          "name": "m SEs ann ae et dae iL |zyp- =? \u2014_. aa rT ath le TELS Te Hyde gas (FT a ede ae SO",
+          "confidence": 0.1793548387096774
+        }
+      ]
+    },
+    "team_b": {
+      "name": "__MISSING__",
+      "players": [
+        {
+          "no": 1,
+          "raw": "_ as . ae He, =| Sere Te TRS ie Lie! wien fo ele",
+          "name": "_ as . ae He, =| Sere Te TRS ie Lie! wien fo ele",
+          "confidence": 0.157
+        }
+      ]
+    }
+  },
+  "raw_ocr": {
+    "date": "",
+    "time": "",
+    "group": "",
+    "venue": "",
+    "choice": "",
+    "section": "",
+    "court_no": "\u2014_ \u2014 * eee ree",
+    "match_no": "",
+    "toss_won": "",
+    "tournament": "nH ro"
+  },
+  "remarks": "ee ee F| pee les GENERALSEORETARE pM feteere pect eg Rt REAR as Ne ap tennit cn a ABIREASI'R8 EEUAATESSOCET 7 ceetewneste eens meetin OEE wn va we",
+  "officials": {
+    "scorer": "__MISSING__",
+    "umpire": "__MISSING__",
+    "referee": "0 0 ee ete",
+    "timekeeper": "__MISSING__"
+  },
+  "match_info": {
+    "date": "__MISSING__",
+    "time": "__MISSING__",
+    "group": "__MISSING__",
+    "venue": "__MISSING__",
+    "choice": "__MISSING__",
+    "section": "__MISSING__",
+    "court_no": "\u2014_ \u2014 * eee ree",
+    "match_no": "__MISSING__",
+    "toss_won": "__MISSING__",
+    "tournament": "nH ro"
+  },
+  "_performance": {
+    "fast_mode": false,
+    "cache_size": 21,
+    "total_time_ms": 3284,
+    "threading_enabled": true,
+    "preprocess_time_ms": 585,
+    "match_extraction_ms": 707,
+    "players_extraction_ms": 572
+  },
+  "missing_fields": [
+    "match_info.venue",
+    "match_info.date",
+    "match_info.time",
+    "match_info.section",
+    "match_info.match_no",
+    "match_info.group",
+    "match_info.toss_won",
+    "match_info.choice"
+  ],
+  "confidence_summary": 0.026505241935483863
+}
+INFO 2026-03-21 19:13:27,693 ocr_pipeline_views 6652 14076 ================================================================================
+INFO 2026-03-21 19:13:27,695 log 6652 14076 "GET /api/review/f48813cd-50cb-4c2a-bf73-a59eab76b882/ HTTP/1.1" 200 1918
