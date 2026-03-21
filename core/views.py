@@ -12,35 +12,14 @@ from .utils.pdf_generator import generate_scoresheet_pdf
 import io
 import time
 import logging
-import json
 import base64
 from io import BytesIO
 from PIL import Image, ImageOps
 import pytesseract
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.response import Response
-from rest_framework import status
 
-# --- Structured Logging Setup ---
-class StructuredFormatter(logging.Formatter):
-    def format(self, record):
-        log_entry = {
-            "timestamp": self.formatTime(record, self.datefmt),
-            "level": record.levelname,
-            "message": record.getMessage()
-        }
-        if hasattr(record, "extra_data"):
-            log_entry.update(getattr(record, "extra_data"))
-        return json.dumps(log_entry)
-
-logger = logging.getLogger("ocr_logger")
-logger.setLevel(logging.INFO)
-if not logger.handlers:
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(StructuredFormatter())
-    logger.addHandler(console_handler)
-logger.propagate = False
+logger = logging.getLogger("core")
 
 class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
@@ -127,18 +106,10 @@ def process_ocr(request):
         # Calculate processing time
         processing_time_ms = int((time.time() - start_time) * 1000)
         
-        # 4. Structured Logging
+        # 4. Structured Logging (DEBUG)
         logger.info(
-            "OCR Processing Complete",
-            extra={
-                "extra_data": {
-                    "filename": filename,
-                    "content_type": content_type,
-                    "processing_time_ms": processing_time_ms,
-                    "extracted_text_snippet": extracted_text[:100] + "..." if len(extracted_text) > 100 else extracted_text,
-                    "text_length": len(extracted_text)
-                }
-            }
+            "OCR Processing Complete | file: %s | length: %d",
+            filename, len(extracted_text)
         )
         
         # 5. Return Response

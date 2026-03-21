@@ -2,3 +2,9 @@ Django
 djangorestframework
 psycopg2-binary
 reportlab
+opencv-python
+pytesseract
+numpy
+Pillow
+django-cors-headers
+python-dotenv

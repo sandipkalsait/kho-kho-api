@@ -93,3 +93,73 @@ class ScoreEvent(models.Model):
 
     def __str__(self):
         return f"{self.event_type} - {self.points} pts"
+
+# ─── Human-in-the-Loop OCR Pipeline Models ───────────────────────────────────
+
+import uuid
+
+class UploadRequest(models.Model):
+    """Tracks the full lifecycle of an image-upload / OCR extraction request."""
+    STATUS_CHOICES = [
+        ('PROCESSING', 'Processing'),
+        ('EXTRACTED',  'Extracted'),
+        ('REVIEWED',   'Reviewed'),
+        ('COMPLETED',  'Completed'),
+        ('FAILED',     'Failed'),
+    ]
+    id            = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id       = models.CharField(max_length=255, blank=True, null=True)
+    document_type = models.CharField(max_length=100, blank=True, null=True)
+    image_url     = models.TextField(blank=True, null=True)
+    status        = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PROCESSING', db_index=True)
+    created_at    = models.DateTimeField(auto_now_add=True)
+    updated_at    = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"UploadRequest {self.id} [{self.status}]"
+
+
+class ExtractedData(models.Model):
+    """Immutable snapshot of the raw OCR / ML extraction output."""
+    id               = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    request          = models.OneToOneField(UploadRequest, related_name='extracted_data', on_delete=models.CASCADE)
+    raw_payload      = models.JSONField(default=dict)
+    confidence_score = models.FloatField(null=True, blank=True)
+    missing_fields   = models.JSONField(default=list)
+    created_at       = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"ExtractedData for {self.request_id}"
+
+
+class ReviewedData(models.Model):
+    """Mutable human-adjusted data linked to an UploadRequest."""
+    id            = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    request       = models.OneToOneField(UploadRequest, related_name='reviewed_data', on_delete=models.CASCADE)
+    reviewer_id   = models.CharField(max_length=255, blank=True, null=True)
+    final_payload = models.JSONField(default=dict)
+    comments      = models.TextField(blank=True, null=True)
+    updated_at    = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"ReviewedData for {self.request_id}"
+
+
+class AuditLog(models.Model):
+    """Append-only record of every change made during the review process."""
+    id             = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    request        = models.ForeignKey(UploadRequest, related_name='audit_logs', on_delete=models.CASCADE)
+    user_id        = models.CharField(max_length=255, blank=True, null=True)
+    action_type    = models.CharField(max_length=50)   # e.g. FIELD_UPDATE, APPROVED, SUBMITTED
+    previous_value = models.JSONField(default=dict, blank=True)
+    new_value      = models.JSONField(default=dict, blank=True)
+    created_at     = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"AuditLog [{self.action_type}] for {self.request_id}"
