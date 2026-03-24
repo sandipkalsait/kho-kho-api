@@ -45,3 +45,5 @@ INFO 2026-03-21 17:08:52,240 template_extractor 24100 7540 Extracting Kho-Kho da
 INFO 2026-03-21 17:09:01,986 ocr_pipeline_views 24100 7540 Template extraction complete. Confidence: 0.04
 INFO 2026-03-21 17:09:02,796 basehttp 24100 7540 "POST /api/upload/ HTTP/1.1" 202 2113
 INFO 2026-03-21 17:09:03,719 basehttp 24100 7540 "GET /api/review/8c94134c-97f8-4691-8975-d1a15a64bb75/ HTTP/1.1" 200 2194
+INFO 2026-03-21 17:11:03,994 basehttp 24100 7540 "GET /api/review/8c94134c-97f8-4691-8975-d1a15a64bb75/ HTTP/1.1" 200 2194
+INFO 2026-03-21 17:11:06,494 basehttp 24100 3808 "GET /api/matches/ HTTP/1.1" 200 3849

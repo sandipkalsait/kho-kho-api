@@ -14,10 +14,12 @@ import time
 import logging
 import base64
 from io import BytesIO
+import numpy as np
 from PIL import Image, ImageOps
-import pytesseract
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from .utils.ocr_provider import build_document_ocr_service, OCRProviderError
+from .utils.dummy_record import build_dummy_extraction_payload
 
 logger = logging.getLogger("core")
 
@@ -64,6 +66,7 @@ class ScoreEventViewSet(viewsets.ModelViewSet):
 @parser_classes([JSONParser, MultiPartParser, FormParser])
 def process_ocr(request):
     start_time = time.time()
+    ocr_service = build_document_ocr_service()
     
     # 1. Validate Request
     image_base64 = request.data.get('image_base64')
@@ -96,12 +99,15 @@ def process_ocr(request):
         filename = getattr(image_file, 'name', 'unknown')
 
     try:
-        
-        # 2. Preprocessing
-        img = ImageOps.grayscale(img)
-        
-        # 3. Perform OCR
-        extracted_text = pytesseract.image_to_string(img).strip()
+        processed = ImageOps.grayscale(img)
+        image_array = np.array(processed)
+
+        document = ocr_service.extract_document(
+            image_array,
+            overlay_required=False,
+            is_table=True,
+        )
+        extracted_text = document.text.strip()
         
         # Calculate processing time
         processing_time_ms = int((time.time() - start_time) * 1000)
@@ -116,9 +122,25 @@ def process_ocr(request):
         return Response({
             "status": "success",
             "text": extracted_text,
-            "processing_time_ms": processing_time_ms
+            "processing_time_ms": processing_time_ms,
+            "provider": document.provider,
+            "source": document.source,
         }, status=status.HTTP_200_OK)
         
+    except OCRProviderError as e:
+        logger.warning(
+            "OCR provider failed. Returning dummy OCR text.",
+            extra={"extra_data": {"filename": locals().get('filename', 'unknown'), "error": str(e)}}
+        )
+        dummy_payload = build_dummy_extraction_payload(str(e))
+        return Response({
+            "status": "success",
+            "text": dummy_payload["extracted"]["remarks"],
+            "processing_time_ms": int((time.time() - start_time) * 1000),
+            "provider": "dummy",
+            "source": "fallback",
+            "usingDummyData": True,
+        }, status=status.HTTP_200_OK)
     except Exception as e:
         logger.error(
             "OCR Processing Failed",
