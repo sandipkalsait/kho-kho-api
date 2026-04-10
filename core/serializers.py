@@ -21,13 +21,6 @@ class ScoreEventSerializer(serializers.ModelSerializer):
         model = ScoreEvent
         fields = '__all__'
 
-    def validate(self, data):
-        instance = ScoreEvent(**data)
-        try:
-            instance.clean()
-        except Exception as e:
-            raise serializers.ValidationError(e.message_dict if hasattr(e, 'message_dict') else str(e))
-        return data
 
 class InningSerializer(serializers.ModelSerializer):
     score_events = ScoreEventSerializer(many=True, read_only=True)
@@ -51,10 +44,4 @@ class MatchCreateSerializer(serializers.ModelSerializer):
         model = Match
         fields = '__all__'
 
-    def validate(self, data):
-        instance = Match(**data)
-        try:
-            instance.clean()
-        except Exception as e:
-            raise serializers.ValidationError(e.message_dict if hasattr(e, 'message_dict') else str(e))
-        return data
+

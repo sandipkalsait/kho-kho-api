@@ -48,15 +48,10 @@ class Match(models.Model):
     result_margin = models.CharField(max_length=255, blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     officials = models.JSONField(default=dict, blank=True, help_text="Scorer, Umpires, Referee, Timekeeper")
+    sheet_payload = models.JSONField(default=dict, null=True, blank=True)
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-        if self.team_a == self.team_b:
-            raise ValidationError("Team A and Team B must be different.")
-        if self.toss_won_by and self.toss_won_by not in [self.team_a, self.team_b]:
-            raise ValidationError("Toss winner must be one of the participating teams.")
-        if self.winner and self.winner not in [self.team_a, self.team_b]:
-            raise ValidationError("Winner must be one of the participating teams.")
+        pass
 
     def __str__(self):
         return f"Match {self.match_number}: {self.team_a} vs {self.team_b}"
@@ -80,16 +75,7 @@ class ScoreEvent(models.Model):
     symbol = models.CharField(max_length=10, blank=True, null=True, help_text="S, L, O, etc.")
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-        if self.raider_player and self.defender_player:
-            if self.raider_player.team == self.defender_player.team:
-                raise ValidationError("Raider and Defender must be from different teams.")
-            
-            match_teams = [self.inning.match.team_a, self.inning.match.team_b]
-            if self.raider_player.team not in match_teams:
-                raise ValidationError(f"Raider player {self.raider_player.name} is not in the match teams.")
-            if self.defender_player.team not in match_teams:
-                raise ValidationError(f"Defender player {self.defender_player.name} is not in the match teams.")
+        pass
 
     def __str__(self):
         return f"{self.event_type} - {self.points} pts"
