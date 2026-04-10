@@ -12,67 +12,322 @@ import os
 import uuid
 import time
 import base64
-import json
+import logging
+import copy
+from datetime import datetime
 from django.conf import settings as django_settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from django.utils.dateparse import parse_date, parse_datetime, parse_time
 
 from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 
-from PIL import Image, ImageOps
-import logging
-from io import BytesIO
-
 # Configurable Tesseract path from .env
 TESSERACT_PATH = os.environ.get("TESSERACT_PATH", r"C:\Program Files\Tesseract-OCR\tesseract.exe")
-# Extraction mode: 'standard' or 'optimized'
-EXTRACTION_MODE = os.environ.get("EXTRACTION_MODE", "optimized").lower()
-# Fast mode: skip heavy preprocessing
-FAST_MODE = os.environ.get("FAST_MODE", "false").lower() == "true"
-# Enable threading
-USE_THREADING = os.environ.get("USE_THREADING", "true").lower() == "true"
 
-try:
-    import cv2
-except ImportError:
-    cv2 = None
-    
-try:
-    import numpy as np
-except ImportError:
-    np = None
+import cv2
+import numpy as np
 
-try:
-    import pytesseract
-    if os.path.exists(TESSERACT_PATH):
-        pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
-except ImportError:
-    pytesseract = None
-
-from .models import UploadRequest, ExtractedData, ReviewedData, AuditLog
-from .utils.ocr_preprocessing import preprocess_image
-from .utils.ocr_parser import parse_kho_kho_sheet, find_missing_fields
+from .models import UploadRequest, ExtractedData, ReviewedData, AuditLog, Match, Tournament, Team, Player
+from .utils.ocr_parser import deep_merge, diff_payload, find_missing_fields, is_full_payload
 from .utils.template_extractor import KhoKhoExtractor
-
-# Import optimized extractor
-try:
-    from .utils.template_extractor_optimized import KhoKhoExtractorOptimized
-except ImportError:
-    KhoKhoExtractorOptimized = None
+from .utils.dummy_record import build_dummy_extraction_payload
+from .utils.ocr_validation import MISSING_VALUE
 
 logger = logging.getLogger("ocr_pipeline")
 
-# ─── Required fields that must be present before submission ───────────────────
-REQUIRED_FIELDS = ["teamA", "teamB", "date"]
+# --- Required fields that must be present before final submission ---
+REQUIRED_FIELDS = [
+    "match_info.tournament", 
+    "match_info.date", 
+    "teams.team_a.name", 
+    "teams.team_b.name"
+]
 
-# ─── Helpers ─────────────────────────────────────────────────────────────────
+DEFAULT_MATCH_TIME = "00:00:00"
 
-# Handled by utils.ocr_preprocessing and utils.ocr_parser
+# --- Helpers ---
 
+
+def _build_review_status(current_payload):
+    pending_required = find_missing_fields(current_payload, REQUIRED_FIELDS)
+    review_status = "READY" if not pending_required else "REVIEW_REQUIRED"
+    return review_status, pending_required
+
+
+def _clean_string(value, default=""):
+    if value is None:
+        return default
+    if isinstance(value, str):
+        cleaned = value.strip()
+        if not cleaned or cleaned == MISSING_VALUE:
+            return default
+        return cleaned
+    return str(value)
+
+
+def _clean_int(value, default=0):
+    if value in (None, "", MISSING_VALUE):
+        return default
+    try:
+        return int(str(value).strip())
+    except (TypeError, ValueError):
+        return default
+
+
+def _parse_sheet_datetime(match_info):
+    scheduled_at = _clean_string(match_info.get("scheduled_at"))
+    if scheduled_at:
+        dt = parse_datetime(scheduled_at)
+        if dt:
+            if timezone.is_naive(dt):
+                dt = timezone.make_aware(dt, timezone.get_current_timezone())
+            return dt
+
+    date_value = _clean_string(match_info.get("date"))
+    time_value = _clean_string(match_info.get("time"), DEFAULT_MATCH_TIME)
+
+    parsed_date = parse_date(date_value)
+    if parsed_date is None and date_value:
+        for fmt in ("%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d"):
+            try:
+                parsed_date = datetime.strptime(date_value, fmt).date()
+                break
+            except ValueError:
+                continue
+    if parsed_date is None:
+        parsed_date = timezone.localdate()
+
+    parsed_time = parse_time(time_value)
+    if parsed_time is None and time_value:
+        for fmt in ("%H:%M", "%H:%M:%S", "%I:%M %p", "%I:%M:%S %p"):
+            try:
+                parsed_time = datetime.strptime(time_value, fmt).time()
+                break
+            except ValueError:
+                continue
+    if parsed_time is None:
+        parsed_time = parse_time(DEFAULT_MATCH_TIME)
+
+    combined = datetime.combine(parsed_date, parsed_time)
+    return timezone.make_aware(combined, timezone.get_current_timezone())
+
+
+def _resolve_tournament(match_info, scheduled_dt):
+    tournament_name = _clean_string(match_info.get("tournament"), "OCR Scoresheet Tournament")
+    venue = _clean_string(match_info.get("venue"), "Unknown Venue")
+
+    tournament, _created = Tournament.objects.get_or_create(
+        name=tournament_name,
+        defaults={
+            "venue": venue,
+            "start_date": scheduled_dt.date(),
+            "end_date": scheduled_dt.date(),
+            "organizer": "OCR Pipeline",
+        },
+    )
+
+    updates = []
+    if venue and tournament.venue != venue:
+        tournament.venue = venue
+        updates.append("venue")
+    if scheduled_dt.date() < tournament.start_date:
+        tournament.start_date = scheduled_dt.date()
+        updates.append("start_date")
+    if scheduled_dt.date() > tournament.end_date:
+        tournament.end_date = scheduled_dt.date()
+        updates.append("end_date")
+    if updates:
+        tournament.save(update_fields=updates)
+
+    return tournament
+
+
+def _resolve_team(team_payload, fallback_name):
+    team_name = _clean_string(team_payload.get("name"), fallback_name)
+    team, _created = Team.objects.get_or_create(name=team_name)
+
+    updates = []
+    coach = _clean_string(team_payload.get("coach"))
+    manager = _clean_string(team_payload.get("manager"))
+    if coach != (team.coach or ""):
+        team.coach = coach or None
+        updates.append("coach")
+    if manager != (team.manager or ""):
+        team.manager = manager or None
+        updates.append("manager")
+    if updates:
+        team.save(update_fields=updates)
+
+    return team
+
+
+def _sync_players(team, players_payload):
+    if not isinstance(players_payload, list):
+        return
+
+    for index, player_payload in enumerate(players_payload):
+        if not isinstance(player_payload, dict):
+            continue
+        player_name = _clean_string(player_payload.get("name"))
+        if not player_name:
+            continue
+        chest_number = _clean_int(player_payload.get("no"), index + 1) or (index + 1)
+        Player.objects.update_or_create(
+            team=team,
+            chest_number=chest_number,
+            defaults={"name": player_name},
+        )
+
+
+def _resolve_named_team(team_name, team_a, team_b):
+    normalized = _clean_string(team_name).lower()
+    if not normalized:
+        return None
+    if normalized == _clean_string(team_a.name).lower():
+        return team_a
+    if normalized == _clean_string(team_b.name).lower():
+        return team_b
+    return None
+
+
+def _build_match_defaults(final_payload, upload_req):
+    payload = copy.deepcopy(final_payload) if isinstance(final_payload, dict) else {}
+    metadata = payload.setdefault("metadata", {})
+    if not isinstance(metadata, dict):
+        metadata = {}
+        payload["metadata"] = metadata
+    metadata["request_id"] = str(upload_req.id)
+    metadata["source_image_url"] = upload_req.image_url or ""
+    metadata["submitted_at"] = timezone.now().isoformat()
+
+    match_info = payload.get("match_info", {}) if isinstance(payload, dict) else {}
+    teams_payload = payload.get("teams", {}) if isinstance(payload, dict) else {}
+    team_a_payload = teams_payload.get("team_a", {}) if isinstance(teams_payload, dict) else {}
+    team_b_payload = teams_payload.get("team_b", {}) if isinstance(teams_payload, dict) else {}
+    score_payload = payload.get("score", {}) if isinstance(payload, dict) else {}
+    result_payload = payload.get("result", {}) if isinstance(payload, dict) else {}
+    officials_payload = payload.get("officials", {}) if isinstance(payload, dict) else {}
+
+    scheduled_dt = _parse_sheet_datetime(match_info)
+    tournament = _resolve_tournament(match_info, scheduled_dt)
+    team_a = _resolve_team(team_a_payload, "Team A")
+    team_b = _resolve_team(team_b_payload, "Team B")
+
+    _sync_players(team_a, team_a_payload.get("players"))
+    _sync_players(team_b, team_b_payload.get("players"))
+
+    toss_team = _resolve_named_team(match_info.get("toss_winner"), team_a, team_b)
+    winner_team = _resolve_named_team(result_payload.get("winner"), team_a, team_b)
+    if winner_team is None:
+        team_a_points = _clean_int(score_payload.get("team_a_points"))
+        team_b_points = _clean_int(score_payload.get("team_b_points"))
+        if team_a_points > team_b_points:
+            winner_team = team_a
+        elif team_b_points > team_a_points:
+            winner_team = team_b
+
+    remarks = _clean_string(payload.get("remarks"))
+    result_summary = _clean_string(result_payload.get("summary"))
+    if not result_summary:
+        result_summary = _clean_string(match_info.get("stage"))
+
+    return {
+        "tournament": tournament,
+        "match_number": _clean_int(match_info.get("match_no"), 0),
+        "court_number": _clean_string(match_info.get("court_no")),
+        "date": scheduled_dt.date(),
+        "time": scheduled_dt.time().replace(microsecond=0),
+        "team_a": team_a,
+        "team_b": team_b,
+        "toss_won_by": toss_team,
+        "choice": _clean_string(match_info.get("choice")) or None,
+        "winner": winner_team,
+        "result_margin": result_summary or None,
+        "remarks": remarks or None,
+        "officials": officials_payload if isinstance(officials_payload, dict) else {},
+        "sheet_payload": payload if isinstance(payload, dict) else {},
+        "source_upload_request": upload_req,
+    }
+
+
+def _persist_match_record(upload_req, final_payload):
+    defaults = _build_match_defaults(final_payload, upload_req)
+    match, _created = Match.objects.update_or_create(
+        source_upload_request=upload_req,
+        defaults=defaults,
+    )
+    return match
+
+
+def _extract_response_meta(extracted):
+    raw_payload = extracted.raw_payload or {}
+    meta = raw_payload.get("_meta") if isinstance(raw_payload, dict) else {}
+    if not isinstance(meta, dict):
+        meta = {}
+
+    return {
+        "usingDummyData": bool(meta.get("source") == "dummy" or meta.get("ocr_failed")),
+        "ocrError": meta.get("ocr_error"),
+        "recordSource": meta.get("source", "ocr"),
+    }
+
+
+def _get_review_layers(upload_req):
+    extracted = upload_req.extracted_data
+    extracted_payload = extracted.extracted_payload or {}
+
+    try:
+        reviewed = upload_req.reviewed_data
+    except ReviewedData.DoesNotExist:
+        reviewed = None
+
+    user_edits = reviewed.user_edits if reviewed else {}
+    final_payload = deep_merge(extracted_payload, user_edits) if user_edits else extracted_payload
+    if reviewed and reviewed.final_payload:
+        final_payload = reviewed.final_payload
+
+    return extracted, reviewed, extracted_payload, user_edits, final_payload
+
+
+def _build_review_response(upload_req):
+    extracted, _reviewed, extracted_payload, user_edits, final_payload = _get_review_layers(upload_req)
+    review_status, pending_required = _build_review_status(final_payload)
+    response_meta = _extract_response_meta(extracted)
+
+    if upload_req.status in ("PROCESSING", "FAILED"):
+        response_status = upload_req.status
+    else:
+        response_status = review_status
+
+    return {
+        "requestId": str(upload_req.id),
+        "status": response_status,
+        "workflowStatus": upload_req.status,
+        "raw_ocr": extracted.raw_payload or {},
+        "extracted": extracted_payload,
+        "final": final_payload,
+        "user_edits": user_edits or {},
+        "extractedData": extracted_payload,
+        "rawOcrData": extracted.raw_payload or {},
+        "finalData": final_payload,
+        "currentData": final_payload,
+        "userEdits": user_edits or {},
+        "confidence": extracted.confidence_score,
+        "confidenceScore": extracted.confidence_score,
+        "missing_fields": extracted.missing_fields or [],
+        "missingFields": extracted.missing_fields or [],
+        "pendingRequiredFields": pending_required,
+        "usingDummyData": response_meta["usingDummyData"],
+        "ocrError": response_meta["ocrError"],
+        "recordSource": response_meta["recordSource"],
+        "sourceImageUrl": upload_req.image_url,
+    }
 
 @csrf_exempt
 @api_view(["GET", "POST", "PUT", "OPTIONS"])
@@ -94,6 +349,7 @@ def upload_image(request):
     start = time.time()
     img_ndarray = None
     save_path = None
+    upload_req = None
 
     # 1. Acquire Image data
     logger.info("-" * 80)
@@ -102,39 +358,24 @@ def upload_image(request):
     
     image_file = request.FILES.get("image")
     if image_file:
-        logger.info("✅ Multipart file detected")
-        logger.info("Filename: %s", image_file.name)
-        logger.info("File Size: %d bytes", image_file.size)
-        logger.info("Content Type: %s", image_file.content_type)
-        
+        logger.info("Multipart file upload: %s", image_file.name)
         try:
-            # Convert to ndarray for CV2 processing
             file_bytes = np.frombuffer(image_file.read(), np.uint8)
             img_ndarray = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
             image_file.seek(0)
-            save_path = default_storage.save(f"uploads/{uuid.uuid4()}_{image_file.name}", ContentFile(image_file.read()))
-            logger.info("✅ Multipart file decoded successfully")
-            logger.info("Image Saved to: %s", save_path)
+            save_dest = f"uploads/{uuid.uuid4()}_{image_file.name}"
+            save_path = default_storage.save(save_dest, ContentFile(image_file.read()))
         except Exception as exc:
-            logger.error("❌ Image processing failed: %s", exc)
-            return Response({"error": f"Image processing failed: {exc}"}, status=400)
+            return Response({"error": f"Decoding failed: {exc}"}, status=400)
     else:
         # Base64 path
         logger.info("📦 Base64 encoded image detected")
         image_b64 = request.data.get("image_base64") or request.data.get("image")
         if not image_b64:
-            logger.warning("❌ No image data found in request")
-            logger.warning("Available request keys: %s", list(request.data.keys()) if hasattr(request, 'data') else [])
-            return Response({"error": "No image found in request.", "keys": list(request.data.keys()) if hasattr(request, 'data') else []}, status=400)
+            return Response({"error": "No image data found."}, status=400)
         
         try:
-            logger.info("🔐 Decoding base64 image data")
-            logger.info("Base64 data length: %d characters", len(image_b64))
-            
-            if "," in image_b64: 
-                image_b64 = image_b64.split(",", 1)[1]
-                logger.info("Data URI detected and stripped")
-            
+            if "," in image_b64: image_b64 = image_b64.split(",", 1)[1]
             img_bytes = base64.b64decode(image_b64)
             logger.info("✅ Base64 decoded successfully. Byte size: %d", len(img_bytes))
             
@@ -147,17 +388,22 @@ def upload_image(request):
             return Response({"error": f"Invalid base64: {exc}"}, status=400)
 
     if img_ndarray is None:
-        logger.error("❌ Failed to decode image - ndarray is None")
-        return Response({"error": "Failed to decode image."}, status=400)
-    
-    logger.info("✅ Image acquisition complete. Image shape: %s", img_ndarray.shape)
+        return Response({"error": "Failed to decode image into CV2 array."}, status=400)
 
-    # 2. Preprocess & OCR
+    req_id = str(uuid.uuid4())
+    upload_req = UploadRequest.objects.create(
+        id=req_id,
+        user_id=request.data.get("userId", "anonymous"),
+        document_type="scoresheet",
+        image_url=save_path,
+        status="PROCESSING",
+    )
+
+    # 2. Preprocess & Extract
     try:
         if not cv2 or not np:
-            return Response({"error": "System Error: OpenCV or NumPy is not installed on the server backend."}, status=500)
+            return Response({"error": "Backend missing CV2/NumPy dependencies."}, status=500)
             
-        # Save file temporarily to disk for CV2/OCR processing
         temp_id = uuid.uuid4()
         temp_path = os.path.join(django_settings.MEDIA_ROOT, f"{temp_id}.png")
         if not os.path.exists(django_settings.MEDIA_ROOT): 
@@ -166,7 +412,6 @@ def upload_image(request):
         cv2.imwrite(temp_path, img_ndarray)
         
         try:
-             # USE THE OPTIMIZED OR STANDARD EXTRACTOR
              t_path = os.environ.get("TESSERACT_PATH")
              
              # Choose extractor based on configuration
@@ -179,88 +424,62 @@ def upload_image(request):
              
              logger.info("🔄 Starting template extraction...")
              payload = extractor.extract(temp_path)
-             
-             # Check for extraction error
+
              if "error" in payload:
-                 logger.error("❌ Extraction failed with error: %s", payload["error"])
-                 return Response({"error": payload["error"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-             
-             # Extract raw text for legacy compatibility / audit
-             raw_text = payload.get("raw_ocr", {}).get("tournament", "") # Sample text
+                 logger.warning("OCR extraction failed. Falling back to dummy payload. error=%s", payload["error"])
+                 payload = build_dummy_extraction_payload(str(payload["error"]))
+
+             raw_ocr_payload = payload.get("raw_ocr", {})
+             extracted_payload = payload.get("extracted", {})
+             confidence = payload.get("confidence", payload.get("confidence_summary", 0.0))
              missing = payload.get("missing_fields", [])
-             confidence_score = payload.get("confidence_summary", 0.0)
-             
-             # Extract performance metrics if available
-             perf_metrics = payload.get("_performance", {})
-             if perf_metrics:
-                 logger.info("⚡ Performance Metrics: %s", json.dumps(perf_metrics, indent=2))
-             
-             logger.info("✅ Template extraction complete")
-             logger.info("📊 Confidence Score: %.2f%%", confidence_score * 100)
-             logger.info("⚠️  Missing Fields Count: %d", len(missing))
-             if missing:
-                 logger.warning("Missing Fields Details: %s", missing)
+             ocr_provider = payload.get("ocr_provider", "unknown")
+
+             logger.info(
+                 "[OCR] Extraction complete. Provider: %s | Confidence: %.2f | Missing: %d",
+                 ocr_provider,
+                 confidence,
+                 len(missing),
+             )
         except Exception as t_err:
-             logger.exception("❌ Tesseract execution failed")
-             return Response({"error": f"Tesseract Engine Error: {t_err}. Check your TESSERACT_PATH in .env or system PATH."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+             logger.exception("Extraction failed in pipeline. Falling back to dummy payload.")
+             payload = build_dummy_extraction_payload(f"OCR Engine Error: {t_err}")
+             raw_ocr_payload = payload.get("raw_ocr", {})
+             extracted_payload = payload.get("extracted", {})
+             confidence = payload.get("confidence", 0.0)
+             missing = payload.get("missing_fields", [])
+             ocr_provider = payload.get("ocr_provider", "dummy")
         finally:
              if os.path.exists(temp_path): os.remove(temp_path)
         
-        # Confidence logic
-        confidence = confidence_score if raw_text else 0.0
-        
-        logger.info("="*80)
-        logger.info("💾 STORING EXTRACTED DATA IN DATABASE")
-        logger.info("="*80)
-
-        # Create Record
-        req_id = str(uuid.uuid4())
-        logger.info("Generated Request ID: %s", req_id)
-        logger.info("User ID: %s", request.data.get("userId", "anonymous"))
-        logger.info("Document Type: %s", request.data.get("documentType", "scoresheet"))
-        logger.info("Image URL: %s", save_path)
-        
-        upload_req = UploadRequest.objects.create(
-            id=req_id,
-            user_id=request.data.get("userId", "anonymous"),
-            document_type=request.data.get("documentType", "scoresheet"),
-            image_url=save_path,
-            status="EXTRACTED",
-        )
-        logger.info("✅ UploadRequest created in DB: %s", req_id)
-        
-        # Log the full extracted payload
-        logger.info("-" * 80)
-        logger.info("📋 FULL EXTRACTED DATA PAYLOAD:")
-        logger.info("-" * 80)
-        logger.info(json.dumps(payload, indent=2))
-        logger.info("-" * 80)
-        
-        extracted_data = ExtractedData.objects.create(
+        # 3. Store extraction record
+        ExtractedData.objects.create(
             request=upload_req,
-            raw_payload=payload,
+            raw_payload=raw_ocr_payload,
+            extracted_payload=extracted_payload,
             confidence_score=confidence,
             missing_fields=missing,
         )
-        logger.info("✅ ExtractedData record created in DB")
-        logger.info("  - Confidence Score stored: %.4f", confidence)
-        logger.info("  - Missing Fields stored: %s", missing)
-        logger.info("="*80)
+        upload_req.status = "EXTRACTED"
+        upload_req.save(update_fields=["status", "updated_at"])
 
-        processing_time_ms = int((time.time() - start) * 1000)
-        logger.info("⏱️  Total Processing Time: %d ms", processing_time_ms)
-        logger.info("🎉 OCR UPLOAD AND EXTRACTION COMPLETE")
-        logger.info("="*80)
+        response_meta = _extract_response_meta(upload_req.extracted_data)
 
         return Response({
             "requestId": req_id,
             "status": "EXTRACTED",
-            "processingTimeMs": processing_time_ms,
-            "dataPreview": payload
+            "ocrProvider": ocr_provider,
+            "usingDummyData": response_meta["usingDummyData"],
+            "ocrError": response_meta["ocrError"],
+            "processingTimeMs": int((time.time() - start) * 1000),
+            "dataPreview": extracted_payload
         }, status=status.HTTP_202_ACCEPTED)
 
     except Exception as exc:
-        logger.exception("❌ Final OCR pipeline stage failed")
+        logger.exception("OCR pipeline crashed")
+        if upload_req:
+            upload_req.status = "FAILED"
+            upload_req.save(update_fields=["status", "updated_at"])
         return Response({"error": str(exc)}, status=500)
 
 
@@ -282,48 +501,14 @@ def review_get(request, request_id):
         return Response({"error": "Request not found."}, status=404)
 
     if upload_req.status == "PROCESSING":
-        logger.info("⏳ Request is still being processed")
-        return Response({"requestId": request_id, "status": "PROCESSING", "message": "Still processing."})
-
-    if upload_req.status == "FAILED":
-        logger.error("❌ Request failed")
-        return Response({"requestId": request_id, "status": "FAILED"}, status=500)
+        return Response({"requestId": request_id, "status": "PROCESSING"})
 
     try:
-        extracted = upload_req.extracted_data
-        logger.info("✅ ExtractedData found")
+        upload_req.extracted_data
     except ExtractedData.DoesNotExist:
         logger.error("❌ No extracted data found for request: %s", request_id)
         return Response({"error": "No extracted data found."}, status=404)
-
-    # Prefer the reviewed payload if a human already touched it
-    current_payload = extracted.raw_payload
-    if upload_req.status in ("REVIEWED", "COMPLETED"):
-        try:
-            current_payload = upload_req.reviewed_data.final_payload
-            logger.info("✅ Using reviewed/completed payload")
-        except ReviewedData.DoesNotExist:
-            logger.info("ℹ️  Using raw extracted payload (no reviews yet)")
-            pass
-    else:
-        logger.info("ℹ️  Using raw extracted payload")
-
-    logger.info("-" * 80)
-    logger.info("📋 RETURNING EXTRACTED DATA:")
-    logger.info("-" * 80)
-    logger.info("Confidence Score: %.4f", extracted.confidence_score)
-    logger.info("Missing Fields: %s", extracted.missing_fields)
-    logger.info("Current Payload:")
-    logger.info(json.dumps(current_payload, indent=2))
-    logger.info("="*80)
-
-    return Response({
-        "requestId":       request_id,
-        "status":          upload_req.status,
-        "extractedData":   current_payload,
-        "confidenceScore": extracted.confidence_score,
-        "missingFields":   extracted.missing_fields,
-    })
+    return Response(_build_review_response(upload_req))
 
 
 # ─── Step 4: Human Review & Update ───────────────────────────────────────────
@@ -331,12 +516,7 @@ def review_get(request, request_id):
 @api_view(["PUT"])
 @parser_classes([JSONParser])
 def review_put(request, request_id):
-    """PUT /api/review/<request_id>/"""
-    logger.info("="*80)
-    logger.info("👤 PROCESSING HUMAN REVIEW & DATA UPDATES")
-    logger.info("="*80)
-    logger.info("Request ID: %s", request_id)
-    
+    """PUT /api/review/<request_id>/update/"""
     try:
         upload_req = UploadRequest.objects.get(id=request_id)
         logger.info("✅ UploadRequest found")
@@ -346,100 +526,69 @@ def review_put(request, request_id):
 
     updated_data = request.data.get("updatedData")
     reviewer_id  = request.data.get("reviewerId", "anonymous")
-    comments     = request.data.get("comments", "")
-    
-    logger.info("Reviewer ID: %s", reviewer_id)
-    logger.info("Comments: %s", comments if comments else "(none)")
 
     if not updated_data or not isinstance(updated_data, dict):
-        logger.error("❌ Invalid updatedData: must be a non-empty dictionary")
-        return Response({"error": "'updatedData' must be a non-empty object."}, status=400)
+        return Response({"error": "'updatedData' must be provided."}, status=400)
 
-    logger.info("-" * 80)
-    logger.info("📝 UPDATED DATA RECEIVED:")
-    logger.info("-" * 80)
-    logger.info(json.dumps(updated_data, indent=2))
-
-    # Capture previous payload for audit trail
-    previous = {}
     try:
-        previous = upload_req.reviewed_data.final_payload
-        logger.info("ℹ️  Previous payload from reviewed_data")
+        extracted = upload_req.extracted_data
+    except ExtractedData.DoesNotExist:
+        return Response({"error": "No extracted data found."}, status=404)
+
+    extracted_payload = extracted.extracted_payload or {}
+
+    try:
+        reviewed = upload_req.reviewed_data
     except ReviewedData.DoesNotExist:
-        try:
-            previous = upload_req.extracted_data.raw_payload
-            logger.info("ℹ️  Previous payload from extracted_data")
-        except ExtractedData.DoesNotExist:
-            logger.warning("⚠️  No previous payload found")
-            pass
+        reviewed = None
 
-    # Compute field-level diff for audit
-    changed_fields = {k: {"old": previous.get(k), "new": v} for k, v in updated_data.items() if previous.get(k) != v}
-    
-    logger.info("-" * 80)
-    logger.info("🔄 FIELD-LEVEL CHANGES:")
-    logger.info("-" * 80)
-    logger.info("Total fields changed: %d", len(changed_fields))
-    for field, changes in changed_fields.items():
-        logger.info("  ✏️  %s:", field)
-        logger.info("     OLD: %s", changes["old"])
-        logger.info("     NEW: %s", changes["new"])
+    previous_data = reviewed.final_payload if reviewed and reviewed.final_payload else extracted_payload
 
-    # Upsert ReviewedData
-    logger.info("-" * 80)
-    logger.info("💾 STORING REVIEWED DATA")
-    logger.info("-" * 80)
-    
+    if is_full_payload(updated_data):
+        next_final = updated_data
+    else:
+        next_final = deep_merge(previous_data, updated_data)
+
+    user_edits = diff_payload(extracted_payload, next_final) or {}
+    final_payload = deep_merge(extracted_payload, user_edits) if user_edits else extracted_payload
+
+    AuditLog.objects.create(
+        request=upload_req,
+        user_id=reviewer_id,
+        action_type="REVIEW",
+        previous_value=previous_data,
+        new_value=final_payload
+    )
+
     ReviewedData.objects.update_or_create(
         request=upload_req,
         defaults={
-            "reviewer_id":   reviewer_id,
-            "final_payload": updated_data,
-            "comments":      comments,
+            "reviewer_id": reviewer_id,
+            "user_edits": user_edits,
+            "final_payload": final_payload,
+            "comments": request.data.get("comments"),
         },
     )
-    logger.info("✅ ReviewedData saved to database")
-
-    # Audit log
-    audit_entry = AuditLog.objects.create(
-        request=upload_req,
-        user_id=reviewer_id,
-        action_type="FIELD_UPDATE",
-        previous_value=previous,
-        new_value=updated_data,
-    )
-    logger.info("✅ AuditLog entry created: %s", audit_entry.id)
-
-    # Update missing fields on ExtractedData
-    try:
-        ext = upload_req.extracted_data
-        ext.missing_fields = find_missing_fields(updated_data)
-        ext.save()
-        logger.info("✅ Updated missing fields in ExtractedData: %s", ext.missing_fields)
-    except ExtractedData.DoesNotExist:
-        logger.warning("⚠️  ExtractedData not found for missing fields update")
-        pass
 
     upload_req.status = "REVIEWED"
-    upload_req.save()
-    logger.info("✅ UploadRequest status updated to: REVIEWED")
-    
-    logger.info("="*80)
-    logger.info("✅ REVIEW PROCESSING COMPLETE")
-    logger.info("="*80)
+    upload_req.save(update_fields=["status", "updated_at"])
+
+    review_status, pending_required = _build_review_status(final_payload)
 
     return Response({
-        "requestId":     request_id,
-        "status":        "REVIEWED",
-        "changedFields": changed_fields,
-        "message":       "Review saved successfully.",
+        "requestId": request_id,
+        "status": review_status,
+        "workflowStatus": "REVIEWED",
+        "message": "Review saved successfully.",
+        "userEdits": user_edits,
+        "finalData": final_payload,
+        "pendingRequiredFields": pending_required,
     })
 
 
 # ─── Step 5: Final Confirmation ──────────────────────────────────────────────
 
 @api_view(["POST"])
-@parser_classes([JSONParser])
 def submit_request(request, request_id):
     """POST /api/submit/<request_id>/"""
     logger.info("="*80)
@@ -454,78 +603,71 @@ def submit_request(request, request_id):
         logger.error("❌ Request not found: %s", request_id)
         return Response({"error": "Request not found."}, status=404)
 
-    if upload_req.status == "COMPLETED":
-        logger.warning("⚠️  Request already submitted")
-        return Response({"error": "Already submitted.", "requestId": request_id}, status=400)
-
-    if upload_req.status not in ("EXTRACTED", "REVIEWED"):
-        logger.error("❌ Invalid status for submission: %s", upload_req.status)
-        return Response({
-            "error": f"Cannot submit a request with status '{upload_req.status}'. Must be EXTRACTED or REVIEWED."
-        }, status=400)
-
-    # Use reviewed payload if available, else fall back to extracted
-    logger.info("-" * 80)
-    logger.info("📦 LOADING FINAL PAYLOAD")
-    logger.info("-" * 80)
-    
     try:
-        final_payload = upload_req.reviewed_data.final_payload
-        logger.info("✅ Using reviewed payload")
+        extracted = upload_req.extracted_data
+    except ExtractedData.DoesNotExist:
+        return Response({"error": "No extracted data found."}, status=404)
+
+    extracted_payload = extracted.extracted_payload or {}
+
+    try:
+        reviewed = upload_req.reviewed_data
     except ReviewedData.DoesNotExist:
-        try:
-            final_payload = upload_req.extracted_data.raw_payload
-            logger.info("✅ Using extracted payload (no reviews)")
-        except ExtractedData.DoesNotExist:
-            logger.error("❌ No data to submit")
-            return Response({"error": "No data to submit."}, status=400)
+        reviewed = None
 
-    logger.info("Final Payload:")
-    logger.info(json.dumps(final_payload, indent=2))
+    reviewer_id = request.data.get("reviewerId", "anonymous")
+    skip_validation = bool(request.data.get("skipValidation"))
+    previous_data = reviewed.final_payload if reviewed and reviewed.final_payload else extracted_payload
+    user_edits = reviewed.user_edits if reviewed else {}
+    request_final_payload = request.data.get("finalPayload")
+    if isinstance(request_final_payload, dict) and is_full_payload(request_final_payload):
+        final_payload = request_final_payload
+        user_edits = diff_payload(extracted_payload, final_payload) or {}
+    else:
+        final_payload = deep_merge(extracted_payload, user_edits) if user_edits else extracted_payload
 
-    # Validate completeness
-    logger.info("-" * 80)
-    logger.info("🔍 VALIDATING DATA COMPLETENESS")
-    logger.info("-" * 80)
-    
-    missing = find_missing_fields(final_payload)
-    if missing:
-        logger.error("❌ Validation failed - Missing fields: %s", missing)
+    missing = find_missing_fields(final_payload, REQUIRED_FIELDS)
+    if missing and not skip_validation:
         return Response({
-            "error":         "Cannot submit — required fields are missing.",
+            "error": "Incomplete data.",
+            "status": "REVIEW_REQUIRED",
             "missingFields": missing,
+            "missing_fields": missing,
         }, status=400)
     
     logger.info("✅ All required fields present - Validation passed!")
 
-    # Mark as completed
-    logger.info("-" * 80)
-    logger.info("💾 MARKING REQUEST AS COMPLETED")
-    logger.info("-" * 80)
-    
-    upload_req.status = "COMPLETED"
-    upload_req.save()
-    logger.info("✅ UploadRequest status updated to: COMPLETED")
-
-    # Final audit log
-    audit_entry = AuditLog.objects.create(
+    ReviewedData.objects.update_or_create(
         request=upload_req,
-        user_id=request.data.get("reviewerId", "system"),
-        action_type="SUBMITTED",
-        previous_value={},
+        defaults={
+            "reviewer_id": reviewer_id,
+            "user_edits": user_edits,
+            "final_payload": final_payload,
+            "comments": reviewed.comments if reviewed else None,
+        },
+    )
+
+    match = _persist_match_record(upload_req, final_payload)
+
+    AuditLog.objects.create(
+        request=upload_req,
+        user_id=reviewer_id,
+        action_type="SUBMIT",
+        previous_value=previous_data,
         new_value=final_payload,
     )
-    logger.info("✅ Final AuditLog entry created: %s", audit_entry.id)
-    
-    logger.info("="*80)
-    logger.info("🎉 DATA SUBMISSION COMPLETE - ALL VALIDATIONS PASSED")
-    logger.info("="*80)
+
+    upload_req.status = "COMPLETED"
+    upload_req.save(update_fields=["status", "updated_at"])
 
     return Response({
-        "requestId":    request_id,
-        "status":       "COMPLETED",
+        "requestId": request_id,
+        "status": "COMPLETED",
+        "message": "Successfully confirmed.",
         "finalPayload": final_payload,
-        "message":      "Data validated and persisted successfully.",
+        "matchId": match.id,
+        "sourceImageUrl": upload_req.image_url,
+        "validationSkipped": skip_validation,
     })
 
 

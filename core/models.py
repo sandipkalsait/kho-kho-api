@@ -48,7 +48,14 @@ class Match(models.Model):
     result_margin = models.CharField(max_length=255, blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     officials = models.JSONField(default=dict, blank=True, help_text="Scorer, Umpires, Referee, Timekeeper")
-    sheet_payload = models.JSONField(default=dict, null=True, blank=True)
+    sheet_payload = models.JSONField(default=dict, blank=True, help_text="Full submitted scoresheet payload from OCR review flow")
+    source_upload_request = models.ForeignKey(
+        'UploadRequest',
+        related_name='submitted_matches',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     def clean(self):
         pass
@@ -109,10 +116,11 @@ class UploadRequest(models.Model):
 
 
 class ExtractedData(models.Model):
-    """Immutable snapshot of the raw OCR / ML extraction output."""
+    """Immutable OCR snapshot split into raw OCR and validated extracted layers."""
     id               = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     request          = models.OneToOneField(UploadRequest, related_name='extracted_data', on_delete=models.CASCADE)
     raw_payload      = models.JSONField(default=dict)
+    extracted_payload = models.JSONField(default=dict)
     confidence_score = models.FloatField(null=True, blank=True)
     missing_fields   = models.JSONField(default=list)
     created_at       = models.DateTimeField(auto_now_add=True)
@@ -122,10 +130,11 @@ class ExtractedData(models.Model):
 
 
 class ReviewedData(models.Model):
-    """Mutable human-adjusted data linked to an UploadRequest."""
+    """Stores user edits separately from the merged final payload."""
     id            = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     request       = models.OneToOneField(UploadRequest, related_name='reviewed_data', on_delete=models.CASCADE)
     reviewer_id   = models.CharField(max_length=255, blank=True, null=True)
+    user_edits    = models.JSONField(default=dict)
     final_payload = models.JSONField(default=dict)
     comments      = models.TextField(blank=True, null=True)
     updated_at    = models.DateTimeField(auto_now=True)

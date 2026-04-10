@@ -7,6 +7,18 @@ Use the debug visualization (roi_debug.py) to verify field positions.
 """
 
 ROI_LAYOUT = {
+    # --- Match Info Header ---
+    "match_info": {
+        "tournament": [0.025, 0.22, 0.075, 0.75],
+        "venue":      [0.075, 0.22, 0.100, 0.75],
+        "date":       [0.105, 0.22, 0.132, 0.33],
+        "time":       [0.105, 0.33, 0.132, 0.44],
+        "court_no":   [0.105, 0.44, 0.132, 0.55],
+        "match_no":   [0.105, 0.55, 0.132, 0.66],
+        "league":     [0.135, 0.35, 0.155, 0.55],
+        "toss_won":   [0.135, 0.55, 0.155, 0.75],
+        "choice":     [0.135, 0.75, 0.155, 0.92],
+    },
     # Header Section - Top of the form (typically 5-15% of page height)
     "tournament": [0.02, 0.25, 0.06, 0.95],    # Tournament name - usually centered top area
     "venue":      [0.06, 0.25, 0.10, 0.95],     # Venue - below tournament
@@ -23,6 +35,16 @@ ROI_LAYOUT = {
     "toss_won":   [0.14, 0.58, 0.18, 0.75],     # Toss won by
     "choice":     [0.14, 0.75, 0.18, 0.92],     # Choice (bat/field)
 
+    # --- Team Names ---
+    "team_names": {
+        "team_a": [0.155, 0.04, 0.185, 0.48],
+        "team_b": [0.155, 0.52, 0.185, 0.96],
+    },
+
+    # --- Player Lists (15 rows) ---
+    "players": {
+        "team_a": [0.20, 0.04, 0.81, 0.48],
+        "team_b": [0.20, 0.52, 0.81, 0.96],
     # Team Headers - typically 18-22% height
     "team_a_name": [0.18, 0.10, 0.22, 0.48],    # Team A Name - left column
     "team_b_name": [0.18, 0.52, 0.22, 0.90],    # Team B Name - right column
@@ -38,6 +60,12 @@ ROI_LAYOUT = {
         "manager":   [0.74, 0.05, 0.78, 0.48],   # Team A Manager
         "staff":     [0.78, 0.05, 0.82, 0.48],   # Team A Staff
     },
+
+    # --- Scores (Large digits usually) ---
+    "scores": {
+        "team_a": [0.84, 0.04, 0.91, 0.25],
+        "team_b": [0.84, 0.52, 0.91, 0.72],
+    },
     "team_b_staff": {
         "coach":     [0.70, 0.52, 0.74, 0.95],   # Team B Coach
         "manager":   [0.74, 0.52, 0.78, 0.95],   # Team B Manager
@@ -52,8 +80,25 @@ ROI_LAYOUT = {
     "remarks":       [0.88, 0.10, 0.96, 0.90],   # Remarks/Comments section
     "final_result":  [0.82, 0.10, 0.88, 0.22],   # Final Result/Winner
 
+    # --- Officials ---
     # Officials Section - typically 68-80% height
     "officials": {
+        "scorer":      [0.84, 0.52, 0.88, 0.68],
+        "umpire1":     [0.84, 0.68, 0.88, 0.85],
+        "referee":     [0.91, 0.84, 0.95, 0.99],
+        "timekeeper":  [0.91, 0.68, 0.95, 0.84],
+    },
+
+    # --- Misc ---
+    "remarks": [0.84, 0.28, 0.95, 0.51],
+}
+
+# Strict validation types
+# used by template_extractor to reject noise
+VALIDATION_RULES = {
+    "numeric": ["court_no", "match_no", "team_a_points", "team_b_points", "no"],
+    "name":    ["team_a", "team_b", "scorer", "umpire1", "referee", "timekeeper", "player_name", "tournament", "venue"],
+    "date":    ["date", "time"],
         "scorer":      [0.68, 0.52, 0.72, 0.95],   # Score keeper/Scorer
         "umpire":      [0.72, 0.52, 0.76, 0.95],   # Umpire
         "referee":     [0.76, 0.52, 0.80, 0.95],   # Referee

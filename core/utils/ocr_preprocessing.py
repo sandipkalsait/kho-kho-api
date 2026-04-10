@@ -11,112 +11,74 @@ _deskew_cache = {}
 def get_grayscale(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-def remove_noise(image):
-    """Faster denoising - use fastNlMeans instead of bilateral filter."""
-    return cv2.fastNlMeansDenoising(image, None, 10, 7, 21)
-
-def thresholding(image):
+def adaptive_thresholding(image):
+    """Applies adaptive thresholding for high contrast."""
     return cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
-def clean_borders(image):
-    """Removes black borders or scan artifacts from edges."""
-    h, w = image.shape[:2]
-    # Simple fix: crop 2% from each edge
-    oy, ox = int(h * 0.02), int(w * 0.02)
-    return image[oy:h-oy, ox:w-ox]
+def remove_table_lines(image):
+    """Uses morphological operations to remove horizontal and vertical lines."""
+    # Create kernels for line detection
+    horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))
+    vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 40))
 
-def get_deskew_angle(image, use_cache=True):
-    """Calculates deskew angle using Hough Line transform with optional caching."""
-    gray = get_grayscale(image) if len(image.shape) == 3 else image
-    
-    # Create cache key based on image shape (for same format documents)
-    cache_key = (gray.shape, hash(gray.tobytes()[:256])) if use_cache else None
-    
-    if cache_key and cache_key in _deskew_cache:
-        logger.debug("⚡ Using cached deskew angle")
-        return _deskew_cache[cache_key]
-    
-    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
-    lines = cv2.HoughLinesP(edges, 1, np.pi/180, 100, minLineLength=100, maxLineGap=10)
-    
-    angle = 0
-    if lines is not None:
-        angles = []
-        for line in lines:
-            x1, y1, x2, y2 = line[0]
-            angle_val = np.degrees(np.arctan2(y2-y1, x2-x1))
-            if -45 < angle_val < 45: 
-                angles.append(angle_val)
-        angle = np.median(angles) if angles else 0
-    
-    if cache_key:
-        _deskew_cache[cache_key] = angle
-    
-    return angle
+    # Detect horizontal lines
+    detect_horizontal = cv2.morphologyEx(image, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+    cnts = cv2.findContours(detect_horizontal, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+    for c in cnts:
+        cv2.drawContours(image, [c], -1, (0,0,0), 3)
 
-def deskew(image, angle=None):
-    """Deskew image - skip if angle is minimal."""
-    if angle is None:
-        angle = get_deskew_angle(image)
-    if abs(angle) < 0.5: 
-        return image
+    # Detect vertical lines
+    detect_vertical = cv2.morphologyEx(image, cv2.MORPH_OPEN, vertical_kernel, iterations=2)
+    cnts = cv2.findContours(detect_vertical, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+    for c in cnts:
+        cv2.drawContours(image, [c], -1, (0,0,0), 3)
+        
+    return image
+
+def deskew(image):
+    """Deskews the image based on detected text orientation."""
+    coords = np.column_stack(np.where(image > 0))
+    angle = cv2.minAreaRect(coords)[-1]
+    if angle < -45:
+        angle = -(90 + angle)
+    else:
+        angle = -angle
     
     (h, w) = image.shape[:2]
     center = (w // 2, h // 2)
     M = cv2.getRotationMatrix2D(center, angle, 1.0)
-    logger.debug("Deskewing image by %.2f degrees", angle)
-    rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+    rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
     return rotated
 
-def morphology_cleanup(image):
-    """Lightweight morphological cleanup."""
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-    image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel, iterations=1)
-    return image
+def sharpen(image):
+    """Applies a sharpening kernel to enhance text edges."""
+    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    return cv2.filter2D(image, -1, kernel)
 
-def preprocess_image(image_ndarray, fast_mode=False):
-    """
-    Full pipeline for form extraction.
-    
-    Args:
-        image_ndarray: Input image
-        fast_mode: If True, skip deskew and heavy denoising
-    
-    Returns:
-        Preprocessed image
-    """
-    logger.info("📋 Starting image preprocessing (fast_mode=%s)", fast_mode)
+def preprocess_image(image_ndarray):
+    """Full production pipeline for scoresheet preprocessing."""
+    logger.info("Running strict preprocessing pipeline")
     
     # 1. Grayscale
     gray = get_grayscale(image_ndarray) if len(image_ndarray.shape) == 3 else image_ndarray
     
-    # 2. Deskew (skip in fast mode)
-    if not fast_mode:
-        angle = get_deskew_angle(gray, use_cache=True)
-        skew_corrected = deskew(gray, angle)
-        logger.debug("✅ Deskew completed (angle: %.2f°)", angle)
-    else:
-        skew_corrected = gray
-        logger.debug("⚡ Skipping deskew (fast mode)")
+    # 2. Adaptive Threshold (high contrast)
+    thresh = adaptive_thresholding(gray)
     
-    # 3. Light denoise
-    if fast_mode:
-        logger.debug("⚡ Using fast denoise")
-        denoised = cv2.GaussianBlur(skew_corrected, (5, 5), 0)
-    else:
-        logger.debug("Running standard denoise")
-        denoised = remove_noise(skew_corrected)
+    # 3. Remove table lines (Morphology)
+    line_free = remove_table_lines(thresh)
     
-    # 4. Thresholding (faster - single pass)
-    thresh = cv2.adaptiveThreshold(denoised, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 5)
+    # 4. Deskew
+    deskewed = deskew(line_free)
     
-    # 5. Clean morphology
-    if not fast_mode:
-        final = morphology_cleanup(thresh)
-        logger.debug("✅ Morphology cleanup completed")
-    else:
-        final = thresh
-        logger.debug("⚡ Skipping morphology (fast mode)")
+    # 5. Sharpen
+    sharpened = sharpen(deskewed)
+    
+    # 6. Invert back for Tesseract (wants black text on white background usually, 
+    # but we extracted white on black in step 2. Let's return high contrast black on white.)
+    final = cv2.bitwise_not(sharpened)
     
     logger.info("✅ Preprocessing complete (shape: %s)", final.shape)
     return final

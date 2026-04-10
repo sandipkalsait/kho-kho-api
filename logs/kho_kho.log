@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 INFO 2026-03-21 19:04:35,897 autoreload 2004 19512 Watching for file changes with StatReloader
 INFO 2026-03-21 19:05:08,884 ocr_pipeline_views 2004 8228 ================================================================================
 INFO 2026-03-21 19:05:08,906 ocr_pipeline_views 2004 8228 ================================================================================
@@ -4137,3 +4138,54 @@ INFO 2026-03-24 18:28:30,481 autoreload 5560 13244 C:\Users\Abhishek\Desktop\leg
 INFO 2026-03-24 18:28:32,001 autoreload 29612 24640 Watching for file changes with StatReloader
 INFO 2026-04-06 14:44:21,455 autoreload 10544 24132 Watching for file changes with StatReloader
 INFO 2026-04-10 15:47:13,014 autoreload 15452 2892 Watching for file changes with StatReloader
+=======
+INFO 2026-03-21 16:41:01,858 autoreload 22580 17076 Watching for file changes with StatReloader
+INFO 2026-03-21 16:41:46,624 autoreload 22580 17076 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
+INFO 2026-03-21 16:41:47,436 autoreload 20840 4508 Watching for file changes with StatReloader
+INFO 2026-03-21 16:42:56,397 autoreload 20840 4508 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\ocr_preprocessing.py changed, reloading.
+INFO 2026-03-21 16:42:57,285 autoreload 22660 2124 Watching for file changes with StatReloader
+INFO 2026-03-21 16:43:45,644 autoreload 22660 2124 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\ocr_parser.py changed, reloading.
+INFO 2026-03-21 16:43:46,522 autoreload 8088 13608 Watching for file changes with StatReloader
+INFO 2026-03-21 16:44:27,864 autoreload 8088 13608 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\views.py changed, reloading.
+INFO 2026-03-21 16:44:28,642 autoreload 2008 7920 Watching for file changes with StatReloader
+INFO 2026-03-21 16:45:32,646 autoreload 2008 7920 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\apps.py changed, reloading.
+INFO 2026-03-21 16:45:33,386 autoreload 2560 17872 Watching for file changes with StatReloader
+INFO 2026-03-21 16:45:48,326 autoreload 2560 17872 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\views.py changed, reloading.
+INFO 2026-03-21 16:45:49,056 autoreload 12688 21316 Watching for file changes with StatReloader
+INFO 2026-03-21 16:47:41,003 autoreload 18788 19944 Watching for file changes with StatReloader
+INFO 2026-03-21 16:48:13,772 autoreload 18788 19944 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\views.py changed, reloading.
+INFO 2026-03-21 16:48:15,138 autoreload 21488 20404 Watching for file changes with StatReloader
+INFO 2026-03-21 16:48:53,672 basehttp 21488 7920 "GET /api/review/c59e7b5b-6d4d-4f5f-9dbe-8cb0fdc61bcc/ HTTP/1.1" 200 491
+INFO 2026-03-21 16:48:57,764 basehttp 21488 1748 "GET /api/matches/ HTTP/1.1" 200 3849
+INFO 2026-03-21 16:49:21,017 basehttp 21488 1748 "GET /api/matches/ HTTP/1.1" 200 3849
+INFO 2026-03-21 16:49:28,569 ocr_pipeline_views 21488 1748 Upload request received. Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryS3scWukBZjAQYH9K
+INFO 2026-03-21 16:49:28,576 ocr_pipeline_views 21488 1748 Processing multipart file: c13eb192-bc82-494e-8ea2-06ed09773ec3
+INFO 2026-03-21 16:49:28,705 ocr_pipeline_views 21488 1748 Executing Tesseract OCR...
+INFO 2026-03-21 16:49:30,597 ocr_pipeline_views 21488 1748 Extraction complete. Fields missing: ['teamA', 'teamB', 'date', 'venue']
+INFO 2026-03-21 16:49:31,554 basehttp 21488 1748 "POST /api/upload/ HTTP/1.1" 202 442
+INFO 2026-03-21 16:49:32,376 basehttp 21488 1748 "GET /api/review/4de1b100-3ffb-4034-92c9-2385f616f152/ HTTP/1.1" 200 491
+INFO 2026-03-21 17:04:30,883 autoreload 21488 20404 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\ocr_preprocessing.py changed, reloading.
+INFO 2026-03-21 17:04:31,964 autoreload 14712 23448 Watching for file changes with StatReloader
+INFO 2026-03-21 17:05:16,812 autoreload 14712 23448 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
+INFO 2026-03-21 17:05:17,990 autoreload 6500 23296 Watching for file changes with StatReloader
+INFO 2026-03-21 17:05:40,497 autoreload 6500 23296 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
+INFO 2026-03-21 17:05:41,618 autoreload 14668 20048 Watching for file changes with StatReloader
+INFO 2026-03-21 17:06:03,330 autoreload 14668 20048 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\template_extractor.py changed, reloading.
+INFO 2026-03-21 17:06:04,814 autoreload 21128 22380 Watching for file changes with StatReloader
+INFO 2026-03-21 17:06:40,647 autoreload 21128 22380 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\utils\template_extractor.py changed, reloading.
+INFO 2026-03-21 17:06:41,785 autoreload 20196 19948 Watching for file changes with StatReloader
+INFO 2026-03-21 17:07:06,385 autoreload 20196 19948 C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\core\ocr_pipeline_views.py changed, reloading.
+INFO 2026-03-21 17:07:07,709 autoreload 21420 18852 Watching for file changes with StatReloader
+INFO 2026-03-21 17:08:29,912 autoreload 24100 21352 Watching for file changes with StatReloader
+INFO 2026-03-21 17:08:38,837 basehttp 24100 3808 "GET /api/review/4de1b100-3ffb-4034-92c9-2385f616f152/ HTTP/1.1" 200 491
+INFO 2026-03-21 17:08:40,837 basehttp 24100 7540 "GET /api/matches/ HTTP/1.1" 200 3849
+INFO 2026-03-21 17:08:44,879 basehttp 24100 7540 "GET /api/matches/ HTTP/1.1" 200 3849
+INFO 2026-03-21 17:08:52,023 ocr_pipeline_views 24100 7540 Upload request received. Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryFpWAfg7WDrT1xsLG
+INFO 2026-03-21 17:08:52,040 ocr_pipeline_views 24100 7540 Processing multipart file: c6b465f5-268e-4961-8aae-f50dbed5e1f8
+INFO 2026-03-21 17:08:52,240 template_extractor 24100 7540 Extracting Kho-Kho data from: C:\Users\kalsa\OneDrive\Backup storage\OneDrive\Desktop\MSc computer science\kho-kho project\lego\kho-kho-api\media\1d6bd6eb-3771-49b0-9f36-38c8e1a4b3a3.png
+INFO 2026-03-21 17:09:01,986 ocr_pipeline_views 24100 7540 Template extraction complete. Confidence: 0.04
+INFO 2026-03-21 17:09:02,796 basehttp 24100 7540 "POST /api/upload/ HTTP/1.1" 202 2113
+INFO 2026-03-21 17:09:03,719 basehttp 24100 7540 "GET /api/review/8c94134c-97f8-4691-8975-d1a15a64bb75/ HTTP/1.1" 200 2194
+INFO 2026-03-21 17:11:03,994 basehttp 24100 7540 "GET /api/review/8c94134c-97f8-4691-8975-d1a15a64bb75/ HTTP/1.1" 200 2194
+INFO 2026-03-21 17:11:06,494 basehttp 24100 3808 "GET /api/matches/ HTTP/1.1" 200 3849
+>>>>>>> c7f32a82d709fb7967002819c9680564242d4e77
